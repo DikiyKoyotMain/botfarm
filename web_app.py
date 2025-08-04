@@ -14,6 +14,7 @@ app = FastAPI(debug=False)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
+# Инициализируем базу данных при запуске
 init_db()
 
 # Константы игры
@@ -44,6 +45,9 @@ def read_root(request: Request):
 @app.post("/create_player/")
 def create_player(name: str = Form(...), db: Session = Depends(get_db)):
     try:
+        # Убеждаемся, что база данных инициализирована
+        init_db()
+        
         if not name or not name.strip():
             raise HTTPException(status_code=400, detail="Имя не может быть пустым")
         
