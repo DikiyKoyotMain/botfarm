@@ -5,3 +5,4 @@ python-multipart==0.0.9
 python-telegram-bot==20.7
 sqlalchemy==2.0.30
 cryptography==41.0.7
+psycopg2-binary==2.9.9
