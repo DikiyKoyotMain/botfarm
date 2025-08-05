@@ -19,10 +19,14 @@ init_db()
 
 # Константы игры
 BUILDING_COSTS = {
-    "farm": 200,
-    "warehouse": 300,
-    "refinery": 500,
-    "mine": 400
+    "house": 200,
+    "windmill": 300,
+    "farm": 150,
+    "warehouse": 400,
+    "factory": 500,
+    "silo": 350,
+    "mine": 400,
+    "refinery": 500
 }
 
 WORKER_COSTS = {

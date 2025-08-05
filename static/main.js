@@ -1,24 +1,50 @@
 let playerId = null;
 let playerData = null;
+let gameObjects = [];
+let isRotated = false;
 
 // Инициализация Telegram Web App
 let tg = window.Telegram.WebApp;
 tg.ready();
 tg.expand();
 
-// Иконки для разных типов
-const ICONS = {
+// Иконки для разных типов зданий
+const BUILDING_ICONS = {
+    house: "🏠",
+    windmill: "🌪️",
     farm: "🌾",
-    warehouse: "🏠",
-    refinery: "⛽",
+    warehouse: "🏭",
+    factory: "🏭",
+    silo: "🗼",
     mine: "⛏️",
+    refinery: "⛽"
+};
+
+// Иконки для работников
+const WORKER_ICONS = {
     farmer: "👨‍🌾",
     miner: "⛏️",
     driver: "🚛",
-    worker: "👷",
+    worker: "👷"
+};
+
+// Иконки для техники
+const VEHICLE_ICONS = {
     truck: "🚛",
     harvester: "🌾",
     excavator: "⛏️"
+};
+
+// Цвета для зданий
+const BUILDING_COLORS = {
+    house: "#e74c3c",
+    windmill: "#f39c12",
+    farm: "#27ae60",
+    warehouse: "#3498db",
+    factory: "#9b59b6",
+    silo: "#34495e",
+    mine: "#8b4513",
+    refinery: "#e67e22"
 };
 
 function createPlayer() {
@@ -47,14 +73,54 @@ function createPlayer() {
             playerId = data.id;
             document.getElementById("playerName").innerText = name;
             document.getElementById("loginSection").style.display = "none";
-            document.getElementById("gameSection").style.display = "block";
+            document.getElementById("topPanel").style.display = "flex";
+            document.getElementById("resourcesPanel").style.display = "block";
+            document.getElementById("actionsPanel").style.display = "block";
+            document.getElementById("bottomPanel").style.display = "flex";
             loadPlayerData();
+            initializeGameWorld();
             showNotification("Игрок создан успешно!");
         })
         .catch(error => {
             console.error("Error:", error);
             showNotification(error.message || "Ошибка создания игрока!");
         });
+}
+
+function initializeGameWorld() {
+    const gameWorld = document.getElementById("gameWorld");
+    
+    // Добавляем начальные объекты
+    addGameObject('tree', 100, 150, '🌳');
+    addGameObject('tree', 300, 200, '🌳');
+    addGameObject('tree', 500, 100, '🌳');
+    addGameObject('water', 200, 300, '💧');
+    addGameObject('water', 400, 250, '💧');
+    
+    // Добавляем начальную ферму
+    addGameObject('building', 250, 200, '🌾', 'farm');
+}
+
+function addGameObject(type, x, y, icon, buildingType = null) {
+    const gameWorld = document.getElementById("gameWorld");
+    const obj = document.createElement("div");
+    
+    obj.className = `game-object ${type}`;
+    obj.style.left = x + 'px';
+    obj.style.top = y + 'px';
+    obj.innerHTML = icon;
+    
+    if (buildingType) {
+        obj.style.background = BUILDING_COLORS[buildingType] || "#667eea";
+        obj.dataset.buildingType = buildingType;
+    }
+    
+    if (type === 'building') {
+        obj.classList.add('floating');
+    }
+    
+    gameWorld.appendChild(obj);
+    gameObjects.push({ element: obj, type, x, y, buildingType });
 }
 
 function loadPlayerData() {
@@ -78,79 +144,32 @@ function loadPlayerData() {
 }
 
 function updateUI(data) {
-    document.getElementById("money").innerText = `$${data.money}`;
+    document.getElementById("money").innerText = `$${data.money.toLocaleString()}`;
     document.getElementById("level").innerText = data.level;
     
-    // Обновляем прогресс-бар
-    const progressPercent = 50;
-    document.getElementById("expBar").style.width = progressPercent + "%";
+    // Обновляем ресурсы
+    updateResources(data);
     
-    // Обновляем здания
-    updateBuildingsGrid(data.buildings);
-    
-    // Обновляем работников
-    updateWorkersGrid(data.workers);
-    
-    // Обновляем машины
-    updateVehiclesGrid(data.vehicles);
+    // Обновляем игровые объекты на основе зданий
+    updateGameObjects(data.buildings);
 }
 
-function updateBuildingsGrid(buildings) {
-    const grid = document.getElementById("buildingsGrid");
-    grid.innerHTML = "";
-    
-    buildings.forEach(building => {
-        const card = document.createElement("div");
-        card.className = "item-card";
-        card.innerHTML = `
-            <div class="item-name">${ICONS[building.type]} ${building.type}</div>
-            <div class="item-stats">
-                Уровень: ${building.level}<br>
-                Здоровье: ${building.health}%<br>
-                Статус: ${building.is_working ? "✅ Работает" : "❌ Остановлен"}
-            </div>
-        `;
-        grid.appendChild(card);
-    });
+function updateResources(data) {
+    // Здесь можно добавить логику обновления ресурсов
+    // Пока используем статические значения
 }
 
-function updateWorkersGrid(workers) {
-    const grid = document.getElementById("workersGrid");
-    grid.innerHTML = "";
+function updateGameObjects(buildings) {
+    // Очищаем существующие здания
+    gameObjects = gameObjects.filter(obj => obj.type !== 'building');
+    document.querySelectorAll('.game-object.building').forEach(el => el.remove());
     
-    workers.forEach(worker => {
-        const card = document.createElement("div");
-        card.className = "item-card";
-        card.innerHTML = `
-            <div class="item-name">${ICONS[worker.type]} ${worker.name}</div>
-            <div class="item-stats">
-                Тип: ${worker.type}<br>
-                Уровень: ${worker.level}<br>
-                Эффективность: ${worker.efficiency}<br>
-                Статус: ${worker.is_working ? "✅ Работает" : "❌ Отдыхает"}
-            </div>
-        `;
-        grid.appendChild(card);
-    });
-}
-
-function updateVehiclesGrid(vehicles) {
-    const grid = document.getElementById("vehiclesGrid");
-    grid.innerHTML = "";
-    
-    vehicles.forEach(vehicle => {
-        const card = document.createElement("div");
-        card.className = "item-card";
-        card.innerHTML = `
-            <div class="item-name">${ICONS[vehicle.type]} ${vehicle.name}</div>
-            <div class="item-stats">
-                Тип: ${vehicle.type}<br>
-                Расход топлива: ${vehicle.fuel_consumption}<br>
-                Вместимость: ${vehicle.capacity}<br>
-                Статус: ${vehicle.is_working ? "✅ Работает" : "❌ Остановлен"}
-            </div>
-        `;
-        grid.appendChild(card);
+    // Добавляем здания из данных
+    buildings.forEach((building, index) => {
+        const x = 200 + (index * 80);
+        const y = 150 + (index * 60);
+        const icon = BUILDING_ICONS[building.type] || '🏠';
+        addGameObject('building', x, y, icon, building.type);
     });
 }
 
@@ -252,6 +271,33 @@ function closeModal(modalId) {
     document.getElementById(modalId).style.display = "none";
 }
 
+function rotateView() {
+    const gameWorld = document.getElementById("gameWorld");
+    isRotated = !isRotated;
+    
+    if (isRotated) {
+        gameWorld.style.transform = "perspective(1000px) rotateX(45deg) rotateY(45deg) scale(0.8)";
+    } else {
+        gameWorld.style.transform = "perspective(1000px) rotateX(45deg) scale(0.8)";
+    }
+    
+    showNotification("Вид изменен!");
+}
+
+function removeObject() {
+    if (gameObjects.length > 0) {
+        const lastObject = gameObjects.pop();
+        lastObject.element.remove();
+        showNotification("Объект удален!");
+    } else {
+        showNotification("Нет объектов для удаления!");
+    }
+}
+
+function toggleSound() {
+    showNotification("Звук переключен!");
+}
+
 function showNotification(message) {
     const notification = document.createElement("div");
     notification.className = "notification";
@@ -285,4 +331,19 @@ setInterval(() => {
     if (playerId) {
         loadPlayerData();
     }
-}, 10000); 
+}, 10000);
+
+// Обновление таймера каждую секунду
+setInterval(() => {
+    if (playerId) {
+        updateTimer();
+    }
+}, 1000);
+
+function updateTimer() {
+    const now = new Date();
+    const hours = String(23 - now.getHours()).padStart(2, '0');
+    const minutes = String(59 - now.getMinutes()).padStart(2, '0');
+    const seconds = String(59 - now.getSeconds()).padStart(2, '0');
+    document.getElementById("timer").innerText = `${hours}:${minutes}:${seconds}`;
+} 
