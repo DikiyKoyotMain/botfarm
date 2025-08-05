@@ -5,8 +5,10 @@ let isRotated = false;
 
 // Инициализация Telegram Web App
 let tg = window.Telegram.WebApp;
-tg.ready();
-tg.expand();
+if (tg && tg.initData) {
+    tg.ready();
+    tg.expand();
+}
 
 // Иконки для разных типов зданий
 const BUILDING_ICONS = {
@@ -340,6 +342,39 @@ window.onclick = function(event) {
     }
 }
 
+// Принудительная активация всех кнопок
+document.addEventListener('DOMContentLoaded', function() {
+    // Добавляем обработчики для всех кнопок
+    const allButtons = document.querySelectorAll('button');
+    allButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Вызываем onclick если он есть
+            if (this.onclick) {
+                this.onclick.call(this, e);
+            }
+        });
+        
+        // Добавляем обработчик для touch событий
+        button.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            this.style.transform = 'scale(0.95)';
+        });
+        
+        button.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            this.style.transform = '';
+            
+            // Вызываем onclick если он есть
+            if (this.onclick) {
+                this.onclick.call(this, e);
+            }
+        });
+    });
+});
+
 // Обработчик Enter для поля ввода имени
 document.addEventListener('DOMContentLoaded', function() {
     const nameInput = document.getElementById("name");
@@ -352,6 +387,41 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Фокус на поле ввода при загрузке
         nameInput.focus();
+        
+        // Принудительный фокус для Telegram Web App
+        setTimeout(() => {
+            nameInput.focus();
+            nameInput.click();
+        }, 100);
+        
+        // Обработчик для принудительного фокуса при клике
+        nameInput.addEventListener('click', function() {
+            this.focus();
+        });
+        
+        // Специальная обработка для Telegram Web App
+        if (tg && tg.initData) {
+            // Принудительно включаем pointer-events для всех интерактивных элементов
+            const interactiveElements = document.querySelectorAll('input, button, .action-button, .modal-button, .bottom-button, .login-button');
+            interactiveElements.forEach(el => {
+                el.style.pointerEvents = 'auto';
+                el.style.touchAction = 'manipulation';
+                el.style.webkitTapHighlightColor = 'transparent';
+            });
+            
+            // Добавляем обработчики событий для кнопок
+            document.querySelectorAll('button').forEach(button => {
+                button.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    this.style.transform = 'scale(0.95)';
+                });
+                
+                button.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    this.style.transform = '';
+                });
+            });
+        }
     }
 });
 
