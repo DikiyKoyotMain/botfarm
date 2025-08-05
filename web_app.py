@@ -17,29 +17,82 @@ templates = Jinja2Templates(directory="templates")
 # Инициализируем базу данных при запуске
 init_db()
 
-# Константы игры
+# Константы игры - Новая система зданий
 BUILDING_COSTS = {
-    "house": 200,
-    "windmill": 300,
-    "farm": 150,
-    "warehouse": 400,
-    "factory": 500,
-    "silo": 350,
-    "mine": 400,
-    "refinery": 500
+    # FARM
+    "cotton_field": 250,
+    "sugarcane_field": 250,
+    "wheat_field": 250,
+    "tree_farm": 500,
+    "well": 1250,
+    "farm_house": 1250,
+    "salt_field": 1250,
+    "lumberjack_house": 2500,
+    "wood_shed": 5000,
+    "silo": 10000,
+    "storehouse": 20000,
+    "wind_pump": 25000,
+    "wind_mill": 15000,
+    "farm_tractor": 175000,
+    "bakery": 200000,
+    "cakery": 250000,
+    "logger_house": 250000,
+    
+    # RANCH
+    "ranch_house": 1250,
+    "feed_mill": 5000,
+    "trough": 5000,
+    "chicken_coop": 30000,
+    "sheep_pen": 40000,
+    "milk_barn": 50000,
+    "atv": 50000,
+    
+    # TERRAIN
+    "dirt_road": 1000,
+    "pasture": 5000,
+    "paved_road": 10000,
+    "pond": 20000,
+    
+    # INDUSTRIAL
+    "oil_pump": 1250,
+    "water_pump": 5000,
+    "water_tower": 5000,
+    "warehouse": 10000,
+    "water_facility": 10000,
+    "wind_turbine": 2500,
+    "worker_house": 2500,
+    "fuel_storage": 15000,
+    "refinery": 15000,
+    "iron_mine": 25000,
+    "lumber_mill": 50000,
+    "power_plant": 100000,
+    "forklift": 125000,
+    "fabric_plant": 250000,
+    "steel_mill": 2000000,
+    "nuclear_power": 10000000,
+    
+    # TRADE
+    "trade_depot": 5000,
+    "trade_pier": 10000,
+    "neighbor_delivery": 15000,
+    "freight_pier": 250000
 }
 
 WORKER_COSTS = {
-    "farmer": 100,
-    "miner": 150,
-    "driver": 200,
-    "worker": 120
+    "farmer": 12,  # $12/min
+    "lumberjack": 120,  # $120/min
+    "rancher": 12,  # $12/min
+    "industrial_worker": 72,  # $72/min
+    "faster_farmer": 180,  # $180/min
+    "faster_lumberjack": 180,  # $180/min
+    "faster_rancher": 180,  # $180/min
+    "faster_worker": 60  # $60/min
 }
 
 VEHICLE_COSTS = {
-    "truck": 800,
-    "harvester": 600,
-    "excavator": 1000
+    "farm_tractor": 175000,
+    "atv": 50000,
+    "forklift": 125000
 }
 
 @app.get("/", response_class=HTMLResponse)
@@ -66,15 +119,15 @@ def create_player(name: str = Form(...), db: Session = Depends(get_db)):
         db.refresh(player)
         
         # Создаем начальную ферму
-        farm = Building(player_id=player.id, building_type="farm", level=1)
+        wheat_field = Building(player_id=player.id, building_type="wheat_field", level=1)
         
         # Создаем начального фермера
         farmer = Worker(player_id=player.id, worker_type="farmer", name="Фермер Иван")
         
         # Создаем начальный грузовик
-        truck = Vehicle(player_id=player.id, vehicle_type="truck", name="Грузовик №1")
+        truck = Vehicle(player_id=player.id, vehicle_type="farm_tractor", name="Фермерский трактор №1")
         
-        db.add_all([farm, farmer, truck])
+        db.add_all([wheat_field, farmer, truck])
         db.commit()
         
         return {"msg": "Player created", "id": player.id}

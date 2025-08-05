@@ -278,26 +278,99 @@
         /* Игровые объекты */
         .game-object {
             position: absolute;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .building {
-            width: 60px;
-            height: 60px;
-            border-radius: 8px;
+            width: 80px;
+            height: 80px;
+            border-radius: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            font-size: 40px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+            z-index: 10;
+            border: 3px solid #fff;
         }
 
-        .tree {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #228B22;
+        .game-object.building {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.5);
+        }
+
+        .game-object.building.house {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .game-object.building.windmill {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+        }
+
+        .game-object.building.farm {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+        }
+
+        .game-object.building.warehouse {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        }
+
+        .game-object.building.factory {
+            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+        }
+
+        .game-object.building.silo {
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+        }
+
+        .game-object.building.mine {
+            background: linear-gradient(135deg, #8b4513 0%, #a0522d 100%);
+        }
+
+        .game-object.building.refinery {
+            background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+        }
+
+        .game-object.tree {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+        }
+
+        .game-object.water {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        }
+
+        /* Режим размещения */
+        .placement-mode {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            z-index: 1000;
+            font-size: 18px;
+        }
+
+        .game-world.placement-mode {
+            cursor: crosshair;
+        }
+
+        .game-world.placement-mode .game-object {
+            pointer-events: none;
+        }
+
+        /* Подсветка при наведении в режиме размещения */
+        .placement-preview {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border: 3px dashed #fff;
+            border-radius: 15px;
+            background: rgba(255,255,255,0.2);
+            pointer-events: none;
+            z-index: 5;
+        }
             display: flex;
             align-items: center;
             justify-content: center;
@@ -411,11 +484,12 @@
             </div>
 
             <!-- Кнопки действий -->
-            <div id="actionButtons" class="action-buttons" style="display: none;">
-                <button class="action-btn" onclick="openShop()" title="Магазин">🏪</button>
-                <button class="action-btn" onclick="rotateView()" title="Повернуть вид">🔄</button>
-                <button class="action-btn" onclick="removeObject()" title="Удалить объект">💣</button>
-            </div>
+                                    <div id="actionButtons" class="action-buttons" style="display: none;">
+                            <button class="action-btn" onclick="openShop()" title="Магазин">🏪</button>
+                            <button class="action-btn" onclick="startPlacement()" title="Разместить здание">📍</button>
+                            <button class="action-btn" onclick="rotateView()" title="Повернуть вид">🔄</button>
+                            <button class="action-btn" onclick="removeObject()" title="Удалить объект">💣</button>
+                        </div>
         </div>
     </div>
 
@@ -431,25 +505,71 @@
             </div>
 
             <div id="buildingsTab" class="shop-items">
-                <button class="shop-item" onclick="buyItem('house', 'Дом', 200)">🏠 Дом (200$)</button>
-                <button class="shop-item" onclick="buyItem('windmill', 'Ветряк', 300)">🌪️ Ветряк (300$)</button>
-                <button class="shop-item" onclick="buyItem('farm', 'Ферма', 150)">🌾 Ферма (150$)</button>
-                <button class="shop-item" onclick="buyItem('warehouse', 'Склад', 400)">🏭 Склад (400$)</button>
-                <button class="shop-item" onclick="buyItem('factory', 'Завод', 500)">🏭 Завод (500$)</button>
-                <button class="shop-item" onclick="buyItem('silo', 'Силос', 350)">🗼 Силос (350$)</button>
+                <!-- FARM -->
+                <button class="shop-item" onclick="buyItem('cotton_field', 'Хлопковое поле', 250)">🌱 Хлопковое поле (250$)</button>
+                <button class="shop-item" onclick="buyItem('sugarcane_field', 'Сахарное поле', 250)">🎋 Сахарное поле (250$)</button>
+                <button class="shop-item" onclick="buyItem('wheat_field', 'Пшеничное поле', 250)">🌾 Пшеничное поле (250$)</button>
+                <button class="shop-item" onclick="buyItem('tree_farm', 'Лесная ферма', 500)">🌳 Лесная ферма (500$)</button>
+                <button class="shop-item" onclick="buyItem('well', 'Колодец', 1250)">💧 Колодец (1250$)</button>
+                <button class="shop-item" onclick="buyItem('farm_house', 'Фермерский дом', 1250)">🏠 Фермерский дом (1250$)</button>
+                <button class="shop-item" onclick="buyItem('salt_field', 'Соляное поле', 1250)">🧂 Соляное поле (1250$)</button>
+                <button class="shop-item" onclick="buyItem('lumberjack_house', 'Дом лесоруба', 2500)">🪓 Дом лесоруба (2500$)</button>
+                <button class="shop-item" onclick="buyItem('wood_shed', 'Дровяной сарай', 5000)">🪵 Дровяной сарай (5000$)</button>
+                <button class="shop-item" onclick="buyItem('silo', 'Силос', 10000)">🗼 Силос (10000$)</button>
+                <button class="shop-item" onclick="buyItem('storehouse', 'Склад', 20000)">🏪 Склад (20000$)</button>
+                <button class="shop-item" onclick="buyItem('wind_pump', 'Ветряной насос', 25000)">💨 Ветряной насос (25000$)</button>
+                <button class="shop-item" onclick="buyItem('wind_mill', 'Ветряная мельница', 15000)">🌪️ Ветряная мельница (15000$)</button>
+                <button class="shop-item" onclick="buyItem('bakery', 'Пекарня', 200000)">🥖 Пекарня (200000$)</button>
+                <button class="shop-item" onclick="buyItem('cakery', 'Кондитерская', 250000)">🎂 Кондитерская (250000$)</button>
+                
+                <!-- RANCH -->
+                <button class="shop-item" onclick="buyItem('ranch_house', 'Ранчо', 1250)">🐄 Ранчо (1250$)</button>
+                <button class="shop-item" onclick="buyItem('feed_mill', 'Кормовой завод', 5000)">🌾 Кормовой завод (5000$)</button>
+                <button class="shop-item" onclick="buyItem('trough', 'Кормушка', 5000)">🥣 Кормушка (5000$)</button>
+                <button class="shop-item" onclick="buyItem('chicken_coop', 'Курятник', 30000)">🐔 Курятник (30000$)</button>
+                <button class="shop-item" onclick="buyItem('sheep_pen', 'Овчарня', 40000)">🐑 Овчарня (40000$)</button>
+                <button class="shop-item" onclick="buyItem('milk_barn', 'Молочная ферма', 50000)">🥛 Молочная ферма (50000$)</button>
+                
+                <!-- TERRAIN -->
+                <button class="shop-item" onclick="buyItem('dirt_road', 'Грунтовая дорога', 1000)">🛣️ Грунтовая дорога (1000$)</button>
+                <button class="shop-item" onclick="buyItem('pasture', 'Пастбище', 5000)">🌿 Пастбище (5000$)</button>
+                <button class="shop-item" onclick="buyItem('paved_road', 'Асфальтовая дорога', 10000)">🛣️ Асфальтовая дорога (10000$)</button>
+                <button class="shop-item" onclick="buyItem('pond', 'Пруд', 20000)">🌊 Пруд (20000$)</button>
+                
+                <!-- INDUSTRIAL -->
+                <button class="shop-item" onclick="buyItem('oil_pump', 'Нефтяная вышка', 1250)">⛽ Нефтяная вышка (1250$)</button>
+                <button class="shop-item" onclick="buyItem('water_pump', 'Водяной насос', 5000)">💧 Водяной насос (5000$)</button>
+                <button class="shop-item" onclick="buyItem('water_tower', 'Водонапорная башня', 5000)">🗼 Водонапорная башня (5000$)</button>
+                <button class="shop-item" onclick="buyItem('warehouse', 'Склад', 10000)">🏭 Склад (10000$)</button>
+                <button class="shop-item" onclick="buyItem('wind_turbine', 'Ветряная турбина', 2500)">💨 Ветряная турбина (2500$)</button>
+                <button class="shop-item" onclick="buyItem('worker_house', 'Дом рабочего', 2500)">🏠 Дом рабочего (2500$)</button>
+                <button class="shop-item" onclick="buyItem('refinery', 'Нефтеперерабатывающий завод', 15000)">🏭 Нефтеперерабатывающий завод (15000$)</button>
+                <button class="shop-item" onclick="buyItem('iron_mine', 'Железный рудник', 25000)">⛏️ Железный рудник (25000$)</button>
+                <button class="shop-item" onclick="buyItem('lumber_mill', 'Лесопилка', 50000)">🪵 Лесопилка (50000$)</button>
+                <button class="shop-item" onclick="buyItem('power_plant', 'Электростанция', 100000)">⚡ Электростанция (100000$)</button>
+                <button class="shop-item" onclick="buyItem('fabric_plant', 'Текстильная фабрика', 250000)">🧵 Текстильная фабрика (250000$)</button>
+                
+                <!-- TRADE -->
+                <button class="shop-item" onclick="buyItem('trade_depot', 'Торговая база', 5000)">📦 Торговая база (5000$)</button>
+                <button class="shop-item" onclick="buyItem('trade_pier', 'Торговый причал', 10000)">🚢 Торговый причал (10000$)</button>
+                <button class="shop-item" onclick="buyItem('neighbor_delivery', 'Доставка соседям', 15000)">🚚 Доставка соседям (15000$)</button>
             </div>
 
             <div id="workersTab" class="shop-items" style="display: none;">
-                <button class="shop-item" onclick="buyItem('farmer', 'Фермер', 100)">👨‍🌾 Фермер (100$)</button>
-                <button class="shop-item" onclick="buyItem('miner', 'Шахтер', 150)">⛏️ Шахтер (150$)</button>
-                <button class="shop-item" onclick="buyItem('driver', 'Водитель', 200)">🚛 Водитель (200$)</button>
-                <button class="shop-item" onclick="buyItem('worker', 'Рабочий', 120)">👷 Рабочий (120$)</button>
+                <button class="shop-item" onclick="buyItem('farmer', 'Фермер', 12)">👨‍🌾 Фермер (12$/мин)</button>
+                <button class="shop-item" onclick="buyItem('lumberjack', 'Лесоруб', 120)">🪓 Лесоруб (120$/мин)</button>
+                <button class="shop-item" onclick="buyItem('rancher', 'Ранчер', 12)">🐄 Ранчер (12$/мин)</button>
+                <button class="shop-item" onclick="buyItem('industrial_worker', 'Промышленный рабочий', 72)">🏭 Промышленный рабочий (72$/мин)</button>
+                <button class="shop-item" onclick="buyItem('faster_farmer', 'Быстрый фермер', 180)">🚜 Быстрый фермер (180$/мин)</button>
+                <button class="shop-item" onclick="buyItem('faster_lumberjack', 'Быстрый лесоруб', 180)">⚡ Быстрый лесоруб (180$/мин)</button>
+                <button class="shop-item" onclick="buyItem('faster_rancher', 'Быстрый ранчер', 180)">🏎️ Быстрый ранчер (180$/мин)</button>
+                <button class="shop-item" onclick="buyItem('faster_worker', 'Быстрый рабочий', 60)">⚡ Быстрый рабочий (60$/мин)</button>
             </div>
 
             <div id="vehiclesTab" class="shop-items" style="display: none;">
-                <button class="shop-item" onclick="buyItem('truck', 'Грузовик', 800)">🚛 Грузовик (800$)</button>
-                <button class="shop-item" onclick="buyItem('harvester', 'Комбайн', 600)">🌾 Комбайн (600$)</button>
-                <button class="shop-item" onclick="buyItem('excavator', 'Экскаватор', 1000)">⛏️ Экскаватор (1000$)</button>
+                <button class="shop-item" onclick="buyItem('farm_tractor', 'Фермерский трактор', 175000)">🚜 Фермерский трактор (175000$)</button>
+                <button class="shop-item" onclick="buyItem('atv', 'Квадроцикл', 50000)">🏎️ Квадроцикл (50000$)</button>
+                <button class="shop-item" onclick="buyItem('forklift', 'Погрузчик', 125000)">🚛 Погрузчик (125000$)</button>
             </div>
 
             <button class="shop-item shop-close" onclick="closeShop()">Закрыть</button>
