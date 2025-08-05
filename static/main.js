@@ -2,6 +2,7 @@ let playerId = null;
 let playerData = null;
 let gameObjects = [];
 let isRotated = false;
+let autoHarvestInterval = null;
 
 // Инициализация Telegram Web App
 let tg = window.Telegram.WebApp;
@@ -49,6 +50,23 @@ const BUILDING_COLORS = {
     refinery: "#e67e22"
 };
 
+// Опыт за покупки
+const XP_REWARDS = {
+    house: 10,
+    windmill: 15,
+    farm: 8,
+    warehouse: 20,
+    factory: 25,
+    silo: 18,
+    farmer: 5,
+    miner: 8,
+    driver: 12,
+    worker: 6,
+    truck: 30,
+    harvester: 25,
+    excavator: 35
+};
+
 function createPlayer() {
     const nameInput = document.getElementById("name");
     const name = nameInput.value;
@@ -82,14 +100,12 @@ function createPlayer() {
         })
         .then(data => {
             playerId = data.id;
-            document.getElementById("playerName").innerText = name;
             document.getElementById("loginSection").style.display = "none";
-            document.getElementById("topPanel").style.display = "flex";
-            document.getElementById("resourcesPanel").style.display = "block";
-            document.getElementById("actionsPanel").style.display = "block";
-            document.getElementById("bottomPanel").style.display = "flex";
+            document.getElementById("topResources").style.display = "flex";
+            document.getElementById("actionButtons").style.display = "flex";
             loadPlayerData();
             initializeGameWorld();
+            startAutoHarvest();
             showNotification("Игрок создан успешно!");
         })
         .catch(error => {
@@ -160,9 +176,6 @@ function loadPlayerData() {
 }
 
 function updateUI(data) {
-    document.getElementById("money").innerText = `$${data.money.toLocaleString()}`;
-    document.getElementById("level").innerText = data.level;
-    
     // Обновляем ресурсы
     updateResources(data);
     
@@ -171,8 +184,12 @@ function updateUI(data) {
 }
 
 function updateResources(data) {
-    // Здесь можно добавить логику обновления ресурсов
-    // Пока используем статические значения
+    // Обновляем количество ресурсов
+    document.getElementById("goldCount").innerText = data.money || 1000;
+    document.getElementById("bagsCount").innerText = Math.floor(data.money / 100) || 9;
+    document.getElementById("bricksCount").innerText = Math.floor(data.money / 50) || 22;
+    document.getElementById("barrelsCount").innerText = Math.floor(data.money / 80) || 12;
+    document.getElementById("plantsCount").innerText = Math.floor(data.money / 200) || 4;
 }
 
 function updateGameObjects(buildings) {
@@ -182,109 +199,134 @@ function updateGameObjects(buildings) {
     
     // Добавляем здания из данных
     buildings.forEach((building, index) => {
-        const x = 200 + (index * 80);
-        const y = 150 + (index * 60);
+        const x = 150 + (index * 100);
+        const y = 150 + (index * 80);
         const icon = BUILDING_ICONS[building.type] || '🏠';
         addGameObject('building', x, y, icon, building.type);
     });
 }
 
-function produce() {
+// Автоматический сбор урожая
+function startAutoHarvest() {
+    if (autoHarvestInterval) {
+        clearInterval(autoHarvestInterval);
+    }
+    
+    autoHarvestInterval = setInterval(() => {
+        if (playerId) {
+            autoHarvest();
+        }
+    }, 5000); // Каждые 5 секунд
+}
+
+function autoHarvest() {
     fetch(`/produce/?player_id=${playerId}`, { method: "POST" })
         .then(res => res.json())
         .then(data => {
-            showNotification(`🌾 Урожай собран! +${data.income}$`);
+            showNotification(`🌾 Автосбор урожая! +${data.income}$`);
             loadPlayerData();
         })
         .catch(error => {
             console.error("Error:", error);
-            showNotification("Ошибка сбора урожая!");
         });
 }
 
-function upgrade() {
-    fetch(`/upgrade/?player_id=${playerId}`, { method: "POST" })
-        .then(res => res.json())
-        .then(data => {
-            showNotification(`⭐ Уровень повышен! Новый уровень: ${data.level}`);
-            loadPlayerData();
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            showNotification("Ошибка улучшения!");
-        });
+// Магазин
+function openShop() {
+    document.getElementById("shopModal").style.display = "block";
 }
 
-function buildBuilding(buildingType) {
-    fetch(`/build/?player_id=${playerId}&building_type=${buildingType}`, { method: "POST" })
-        .then(res => res.json())
-        .then(data => {
-            showNotification(`🏗️ ${buildingType} построен!`);
-            closeModal('buildModal');
-            loadPlayerData();
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            showNotification("Ошибка строительства!");
-        });
+function closeShop() {
+    document.getElementById("shopModal").style.display = "none";
 }
 
-function hireWorker(workerType) {
-    const name = document.getElementById("workerName").value;
-    if (!name.trim()) {
-        showNotification("Введите имя работника!");
+function switchTab(tabName) {
+    // Скрываем все табы
+    document.querySelectorAll('.shop-items').forEach(tab => {
+        tab.style.display = 'none';
+    });
+    
+    // Убираем активный класс со всех кнопок
+    document.querySelectorAll('.shop-tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    
+    // Показываем нужный таб
+    document.getElementById(tabName + 'Tab').style.display = 'grid';
+    
+    // Добавляем активный класс к кнопке
+    event.target.classList.add('active');
+}
+
+function buyItem(type, name, cost) {
+    if (!playerId) return;
+    
+    // Проверяем, есть ли деньги
+    if (playerData && playerData.money < cost) {
+        showNotification("Недостаточно денег!");
         return;
     }
     
-    fetch(`/hire_worker/?player_id=${playerId}&worker_type=${workerType}&name=${encodeURIComponent(name)}`, { method: "POST" })
-        .then(res => res.json())
-        .then(data => {
-            showNotification(`👷 ${workerType} нанят!`);
-            document.getElementById("workerName").value = "";
-            closeModal('workerModal');
-            loadPlayerData();
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            showNotification("Ошибка найма работника!");
-        });
-}
-
-function buyVehicle(vehicleType) {
-    const name = document.getElementById("vehicleName").value;
-    if (!name.trim()) {
-        showNotification("Введите название машины!");
-        return;
+    // Определяем тип покупки
+    let endpoint = '';
+    let params = '';
+    
+    if (['house', 'windmill', 'farm', 'warehouse', 'factory', 'silo'].includes(type)) {
+        endpoint = '/build/';
+        params = `player_id=${playerId}&building_type=${type}`;
+    } else if (['farmer', 'miner', 'driver', 'worker'].includes(type)) {
+        endpoint = '/hire_worker/';
+        params = `player_id=${playerId}&worker_type=${type}&name=${name}`;
+    } else {
+        endpoint = '/buy_vehicle/';
+        params = `player_id=${playerId}&vehicle_type=${type}&name=${name}`;
     }
     
-    fetch(`/buy_vehicle/?player_id=${playerId}&vehicle_type=${vehicleType}&name=${encodeURIComponent(name)}`, { method: "POST" })
+    fetch(`${endpoint}?${params}`, { method: "POST" })
         .then(res => res.json())
         .then(data => {
-            showNotification(`🚛 ${vehicleType} куплен!`);
-            document.getElementById("vehicleName").value = "";
-            closeModal('vehicleModal');
+            // Добавляем опыт за покупку
+            const xp = XP_REWARDS[type] || 5;
+            showNotification(`✅ ${name} куплен! +${xp} опыта`);
+            
+            // Размещаем здание на поле если это здание
+            if (['house', 'windmill', 'farm', 'warehouse', 'factory', 'silo'].includes(type)) {
+                const x = 150 + (gameObjects.filter(obj => obj.type === 'building').length * 100);
+                const y = 150 + (gameObjects.filter(obj => obj.type === 'building').length * 80);
+                const icon = BUILDING_ICONS[type] || '🏠';
+                addGameObject('building', x, y, icon, type);
+            }
+            
+            closeShop();
             loadPlayerData();
         })
         .catch(error => {
             console.error("Error:", error);
-            showNotification("Ошибка покупки машины!");
+            showNotification("Ошибка покупки!");
         });
 }
 
-function showBuildModal() {
-    document.getElementById("buildModal").style.display = "block";
-}
-
-function showWorkerModal() {
-    document.getElementById("workerModal").style.display = "block";
-}
-
-function showVehicleModal() {
-    document.getElementById("vehicleModal").style.display = "block";
-}
-
-function closeModal(modalId) {
-    document.getElementById(modalId).style.display = "none";
+function showResourceInfo(resourceType, resourceName) {
+    let description = '';
+    switch(resourceType) {
+        case 'gold':
+            description = 'Основная валюта игры. Зарабатывается автоматически.';
+            break;
+        case 'bags':
+            description = 'Мешки с зерном. Используются для кормления животных.';
+            break;
+        case 'bricks':
+            description = 'Строительные материалы. Нужны для постройки зданий.';
+            break;
+        case 'barrels':
+            description = 'Бочки с топливом. Используются для техники.';
+            break;
+        case 'plants':
+            description = 'Растения и семена. Основа для выращивания культур.';
+            break;
+    }
+    
+    showNotification(`${resourceName}: ${description}`);
 }
 
 function rotateView() {
@@ -310,10 +352,6 @@ function removeObject() {
     }
 }
 
-function toggleSound() {
-    showNotification("Звук переключен!");
-}
-
 function showNotification(message) {
     const notification = document.createElement("div");
     notification.className = "notification";
@@ -332,13 +370,11 @@ function showNotification(message) {
     }, 3000);
 }
 
-// Закрытие модальных окон при клике вне их
+// Закрытие магазина при клике вне его
 window.onclick = function(event) {
-    const modals = document.getElementsByClassName("modal");
-    for (let modal of modals) {
-        if (event.target === modal) {
-            modal.style.display = "none";
-        }
+    const shopModal = document.getElementById("shopModal");
+    if (event.target === shopModal) {
+        shopModal.style.display = "none";
     }
 }
 
@@ -402,7 +438,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Специальная обработка для Telegram Web App
         if (tg && tg.initData) {
             // Принудительно включаем pointer-events для всех интерактивных элементов
-            const interactiveElements = document.querySelectorAll('input, button, .action-button, .modal-button, .bottom-button, .login-button');
+            const interactiveElements = document.querySelectorAll('input, button, .action-btn, .shop-item, .login-button');
             interactiveElements.forEach(el => {
                 el.style.pointerEvents = 'auto';
                 el.style.touchAction = 'manipulation';
@@ -430,19 +466,4 @@ setInterval(() => {
     if (playerId) {
         loadPlayerData();
     }
-}, 10000);
-
-// Обновление таймера каждую секунду
-setInterval(() => {
-    if (playerId) {
-        updateTimer();
-    }
-}, 1000);
-
-function updateTimer() {
-    const now = new Date();
-    const hours = String(23 - now.getHours()).padStart(2, '0');
-    const minutes = String(59 - now.getMinutes()).padStart(2, '0');
-    const seconds = String(59 - now.getSeconds()).padStart(2, '0');
-    document.getElementById("timer").innerText = `${hours}:${minutes}:${seconds}`;
-} 
+}, 10000); 

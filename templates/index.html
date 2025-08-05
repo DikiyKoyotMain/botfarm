@@ -52,268 +52,162 @@
             z-index: 100;
         }
 
-        .ui-element {
-            pointer-events: auto;
-        }
-
-        /* Верхняя панель */
-        .top-panel {
+        /* Верхняя панель с ресурсами */
+        .top-resources {
             position: absolute;
             top: 10px;
-            left: 10px;
-            right: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            padding: 10px 15px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            backdrop-filter: blur(10px);
-        }
-
-        .player-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .player-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            color: white;
-        }
-
-        .player-stats {
-            display: flex;
-            gap: 15px;
-        }
-
-        .stat-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-weight: bold;
-        }
-
-        .money {
-            color: #f39c12;
-        }
-
-        .level {
-            color: #3498db;
-        }
-
-        .timer {
-            color: #e74c3c;
-        }
-
-        /* Левая панель ресурсов */
-        .resources-panel {
-            position: absolute;
-            left: 10px;
-            top: 80px;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            padding: 15px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            backdrop-filter: blur(10px);
-            min-width: 200px;
-        }
-
-        .resource-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 8px;
-            padding: 5px;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.5);
-        }
-
-        .resource-icon {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-        }
-
-        .resource-count {
-            font-weight: bold;
-            color: #2c3e50;
-        }
-
-        /* Правая панель действий */
-        .actions-panel {
-            position: absolute;
-            right: 10px;
-            top: 80px;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            padding: 15px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            backdrop-filter: blur(10px);
-            min-width: 200px;
-        }
-
-        .action-button {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 8px;
-            border: none;
-            border-radius: 10px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            pointer-events: auto !important;
-            touch-action: manipulation;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .action-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-        }
-
-        .action-button:active {
-            transform: translateY(0);
-        }
-
-        /* Нижняя панель */
-        .bottom-panel {
-            position: absolute;
-            bottom: 10px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
-            gap: 10px;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            padding: 10px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            backdrop-filter: blur(10px);
+            gap: 15px;
+            z-index: 200;
         }
 
-        .bottom-button {
+        .resource-icon {
             width: 50px;
             height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .resource-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .resource-count {
+            position: absolute;
+            bottom: -5px;
+            right: -5px;
+            background: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Кнопки действий */
+        .action-buttons {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 200;
+        }
+
+        .action-btn {
+            width: 60px;
+            height: 60px;
             border: none;
             border-radius: 50%;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            font-size: 20px;
+            font-size: 24px;
             cursor: pointer;
             transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             pointer-events: auto !important;
             touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
         }
 
-        .bottom-button:hover {
+        .action-btn:hover {
             transform: scale(1.1);
         }
 
-        /* Модальные окна */
-        .modal {
+        /* Магазин */
+        .shop-modal {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.7);
             z-index: 1000;
             backdrop-filter: blur(5px);
         }
 
-        .modal-content {
-            background: white;
+        .shop-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border-radius: 20px;
             padding: 25px;
             margin: 20px;
             max-width: 400px;
             margin: 50px auto;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            color: white;
         }
 
-        .modal-title {
-            font-size: 20px;
+        .shop-title {
+            font-size: 24px;
             font-weight: bold;
             margin-bottom: 20px;
             text-align: center;
-            color: #2c3e50;
         }
 
-        .modal-grid {
+        .shop-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .shop-tab {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .shop-tab.active {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .shop-items {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
             margin-bottom: 20px;
         }
 
-        .modal-button {
+        .shop-item {
             padding: 15px;
             border: none;
             border-radius: 10px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: rgba(255,255,255,0.2);
             color: white;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
             pointer-events: auto !important;
             touch-action: manipulation;
-            -webkit-tap-highlight-color: transparent;
         }
 
-        .modal-button:hover {
+        .shop-item:hover {
+            background: rgba(255,255,255,0.3);
             transform: translateY(-2px);
         }
 
-        .modal-input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            font-size: 16px;
-        }
-
-        .modal-close {
+        .shop-close {
             background: #e74c3c;
-        }
-
-        /* Уведомления */
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
-            color: white;
-            padding: 15px 20px;
-            border-radius: 10px;
-            z-index: 1001;
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-        }
-
-        .notification.show {
-            transform: translateX(0);
+            width: 100%;
         }
 
         /* Логин секция */
@@ -385,6 +279,7 @@
         .game-object {
             position: absolute;
             transition: all 0.3s ease;
+            cursor: pointer;
         }
 
         .building {
@@ -432,21 +327,28 @@
             animation: float 3s ease-in-out infinite;
         }
 
-        /* Адаптивность */
-        @media (max-width: 768px) {
-            .top-panel {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .resources-panel, .actions-panel {
-                min-width: 150px;
-            }
+        /* Уведомления */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            z-index: 1001;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        .notification.show {
+            transform: translateX(0);
         }
 
         /* Специальные стили для Telegram Web App */
         @media (max-width: 768px) {
-            input, button, .action-button, .modal-button, .bottom-button, .login-button {
+            input, button, .action-btn, .shop-item, .login-button {
                 pointer-events: auto !important;
                 touch-action: manipulation !important;
                 -webkit-tap-highlight-color: transparent !important;
@@ -484,127 +386,73 @@
                 <button onclick="createPlayer()" class="login-button">Начать игру</button>
             </div>
 
-            <!-- Верхняя панель -->
-            <div id="topPanel" class="top-panel" style="display: none;">
-                <div class="player-info">
-                    <div class="player-avatar">👤</div>
-                    <div>
-                        <div style="font-weight: bold;" id="playerName">Игрок</div>
-                        <div style="font-size: 12px; color: #666;">Coming Soon!</div>
-                    </div>
+            <!-- Верхняя панель ресурсов -->
+            <div id="topResources" class="top-resources" style="display: none;">
+                <div class="resource-icon" style="background: #f39c12;" onclick="showResourceInfo('gold', 'Золото')">
+                    🥇
+                    <div class="resource-count" id="goldCount">730</div>
                 </div>
-                <div class="player-stats">
-                    <div class="stat-item money">
-                        <span>💰</span>
-                        <span id="money">$1,000</span>
-                    </div>
-                    <div class="stat-item level">
-                        <span>⭐</span>
-                        <span id="level">1</span>
-                    </div>
-                    <div class="stat-item timer">
-                        <span>⏰</span>
-                        <span id="timer">22:00:00</span>
-                    </div>
+                <div class="resource-icon" style="background: #8b4513;" onclick="showResourceInfo('bags', 'Мешки')">
+                    🛍️
+                    <div class="resource-count" id="bagsCount">9</div>
                 </div>
-            </div>
-
-            <!-- Левая панель ресурсов -->
-            <div id="resourcesPanel" class="resources-panel" style="display: none;">
-                <h3 style="margin-bottom: 15px; color: #2c3e50;">📦 Ресурсы</h3>
-                <div id="resourcesList">
-                    <div class="resource-item">
-                        <div class="resource-icon" style="background: #f39c12;">🥇</div>
-                        <span class="resource-count">730</span>
-                    </div>
-                    <div class="resource-item">
-                        <div class="resource-icon" style="background: #8b4513;">🛍️</div>
-                        <span class="resource-count">9</span>
-                    </div>
-                    <div class="resource-item">
-                        <div class="resource-icon" style="background: #e74c3c;">🧱</div>
-                        <span class="resource-count">22</span>
-                    </div>
-                    <div class="resource-item">
-                        <div class="resource-icon" style="background: #3498db;">🛢️</div>
-                        <span class="resource-count">12</span>
-                    </div>
-                    <div class="resource-item">
-                        <div class="resource-icon" style="background: #27ae60;">🌿</div>
-                        <span class="resource-count">4</span>
-                    </div>
+                <div class="resource-icon" style="background: #e74c3c;" onclick="showResourceInfo('bricks', 'Кирпичи')">
+                    🧱
+                    <div class="resource-count" id="bricksCount">22</div>
+                </div>
+                <div class="resource-icon" style="background: #3498db;" onclick="showResourceInfo('barrels', 'Бочки')">
+                    🛢️
+                    <div class="resource-count" id="barrelsCount">12</div>
+                </div>
+                <div class="resource-icon" style="background: #27ae60;" onclick="showResourceInfo('plants', 'Растения')">
+                    🌿
+                    <div class="resource-count" id="plantsCount">4</div>
                 </div>
             </div>
 
-            <!-- Правая панель действий -->
-            <div id="actionsPanel" class="actions-panel" style="display: none;">
-                <h3 style="margin-bottom: 15px; color: #2c3e50;">⚡ Действия</h3>
-                <button onclick="produce()" class="action-button">
-                    🌾 Собрать урожай
-                </button>
-                <button onclick="showBuildModal()" class="action-button">
-                    🏗️ Строить
-                </button>
-                <button onclick="showWorkerModal()" class="action-button">
-                    👷 Нанять
-                </button>
-                <button onclick="showVehicleModal()" class="action-button">
-                    🚛 Техника
-                </button>
-                <button onclick="upgrade()" class="action-button">
-                    ⭐ Улучшить
-                </button>
-            </div>
-
-            <!-- Нижняя панель -->
-            <div id="bottomPanel" class="bottom-panel" style="display: none;">
-                <button class="bottom-button" onclick="rotateView()">🔄</button>
-                <button class="bottom-button" onclick="removeObject()">💣</button>
-                <button class="bottom-button" onclick="toggleSound()">🔊</button>
+            <!-- Кнопки действий -->
+            <div id="actionButtons" class="action-buttons" style="display: none;">
+                <button class="action-btn" onclick="openShop()" title="Магазин">🏪</button>
+                <button class="action-btn" onclick="rotateView()" title="Повернуть вид">🔄</button>
+                <button class="action-btn" onclick="removeObject()" title="Удалить объект">💣</button>
             </div>
         </div>
     </div>
 
-    <!-- Модальные окна -->
-    <div id="buildModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-title">🏗️ Строительство</div>
-            <div class="modal-grid">
-                <button onclick="buildBuilding('house')" class="modal-button">🏠 Дом (200$)</button>
-                <button onclick="buildBuilding('windmill')" class="modal-button">🌪️ Ветряк (300$)</button>
-                <button onclick="buildBuilding('farm')" class="modal-button">🌾 Ферма (150$)</button>
-                <button onclick="buildBuilding('warehouse')" class="modal-button">🏭 Склад (400$)</button>
-                <button onclick="buildBuilding('factory')" class="modal-button">🏭 Завод (500$)</button>
-                <button onclick="buildBuilding('silo')" class="modal-button">🗼 Силос (350$)</button>
+    <!-- Магазин -->
+    <div id="shopModal" class="shop-modal">
+        <div class="shop-content">
+            <div class="shop-title">🏪 Магазин</div>
+            
+            <div class="shop-tabs">
+                <button class="shop-tab active" onclick="switchTab('buildings')">🏗️ Здания</button>
+                <button class="shop-tab" onclick="switchTab('workers')">👷 Работники</button>
+                <button class="shop-tab" onclick="switchTab('vehicles')">🚛 Техника</button>
             </div>
-            <button onclick="closeModal('buildModal')" class="modal-button modal-close">Отмена</button>
-        </div>
-    </div>
 
-    <div id="workerModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-title">👷 Наем работника</div>
-            <input type="text" id="workerName" placeholder="Имя работника" class="modal-input">
-            <div class="modal-grid">
-                <button onclick="hireWorker('farmer')" class="modal-button">👨‍🌾 Фермер (100$)</button>
-                <button onclick="hireWorker('miner')" class="modal-button">⛏️ Шахтер (150$)</button>
-                <button onclick="hireWorker('driver')" class="modal-button">🚛 Водитель (200$)</button>
-                <button onclick="hireWorker('worker')" class="modal-button">👷 Рабочий (120$)</button>
+            <div id="buildingsTab" class="shop-items">
+                <button class="shop-item" onclick="buyItem('house', 'Дом', 200)">🏠 Дом (200$)</button>
+                <button class="shop-item" onclick="buyItem('windmill', 'Ветряк', 300)">🌪️ Ветряк (300$)</button>
+                <button class="shop-item" onclick="buyItem('farm', 'Ферма', 150)">🌾 Ферма (150$)</button>
+                <button class="shop-item" onclick="buyItem('warehouse', 'Склад', 400)">🏭 Склад (400$)</button>
+                <button class="shop-item" onclick="buyItem('factory', 'Завод', 500)">🏭 Завод (500$)</button>
+                <button class="shop-item" onclick="buyItem('silo', 'Силос', 350)">🗼 Силос (350$)</button>
             </div>
-            <button onclick="closeModal('workerModal')" class="modal-button modal-close">Отмена</button>
-        </div>
-    </div>
 
-    <div id="vehicleModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-title">🚛 Покупка техники</div>
-            <input type="text" id="vehicleName" placeholder="Название техники" class="modal-input">
-            <div class="modal-grid">
-                <button onclick="buyVehicle('truck')" class="modal-button">🚛 Грузовик (800$)</button>
-                <button onclick="buyVehicle('harvester')" class="modal-button">🌾 Комбайн (600$)</button>
-                <button onclick="buyVehicle('excavator')" class="modal-button">⛏️ Экскаватор (1000$)</button>
+            <div id="workersTab" class="shop-items" style="display: none;">
+                <button class="shop-item" onclick="buyItem('farmer', 'Фермер', 100)">👨‍🌾 Фермер (100$)</button>
+                <button class="shop-item" onclick="buyItem('miner', 'Шахтер', 150)">⛏️ Шахтер (150$)</button>
+                <button class="shop-item" onclick="buyItem('driver', 'Водитель', 200)">🚛 Водитель (200$)</button>
+                <button class="shop-item" onclick="buyItem('worker', 'Рабочий', 120)">👷 Рабочий (120$)</button>
             </div>
-            <button onclick="closeModal('vehicleModal')" class="modal-button modal-close">Отмена</button>
+
+            <div id="vehiclesTab" class="shop-items" style="display: none;">
+                <button class="shop-item" onclick="buyItem('truck', 'Грузовик', 800)">🚛 Грузовик (800$)</button>
+                <button class="shop-item" onclick="buyItem('harvester', 'Комбайн', 600)">🌾 Комбайн (600$)</button>
+                <button class="shop-item" onclick="buyItem('excavator', 'Экскаватор', 1000)">⛏️ Экскаватор (1000$)</button>
+            </div>
+
+            <button class="shop-item shop-close" onclick="closeShop()">Закрыть</button>
         </div>
     </div>
 
