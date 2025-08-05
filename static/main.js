@@ -48,11 +48,20 @@ const BUILDING_COLORS = {
 };
 
 function createPlayer() {
-    const name = document.getElementById("name").value;
+    const nameInput = document.getElementById("name");
+    const name = nameInput.value;
+    
     if (!name.trim()) {
         showNotification("Введите имя!");
+        nameInput.focus();
         return;
     }
+    
+    // Показываем индикатор загрузки
+    const button = document.querySelector('.login-button');
+    const originalText = button.textContent;
+    button.textContent = "Создание...";
+    button.disabled = true;
     
     const formData = new FormData();
     formData.append('name', name.trim());
@@ -84,6 +93,11 @@ function createPlayer() {
         .catch(error => {
             console.error("Error:", error);
             showNotification(error.message || "Ошибка создания игрока!");
+        })
+        .finally(() => {
+            // Восстанавливаем кнопку
+            button.textContent = originalText;
+            button.disabled = false;
         });
 }
 
@@ -325,6 +339,21 @@ window.onclick = function(event) {
         }
     }
 }
+
+// Обработчик Enter для поля ввода имени
+document.addEventListener('DOMContentLoaded', function() {
+    const nameInput = document.getElementById("name");
+    if (nameInput) {
+        nameInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                createPlayer();
+            }
+        });
+        
+        // Фокус на поле ввода при загрузке
+        nameInput.focus();
+    }
+});
 
 // Автообновление данных каждые 10 секунд
 setInterval(() => {
