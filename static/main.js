@@ -7,6 +7,33 @@ let placementMode = false;
 let selectedBuildingType = null;
 let placementPreview = null;
 
+// Новая система транспортировки ресурсов
+let resources = {
+    wheat: 0,
+    cotton: 0,
+    sugarcane: 0,
+    wood: 0,
+    milk: 0,
+    eggs: 0,
+    wool: 0
+};
+
+let warehouse = {
+    wheat: 0,
+    cotton: 0,
+    sugarcane: 0,
+    wood: 0,
+    milk: 0,
+    eggs: 0,
+    wool: 0
+};
+
+let vehicle = {
+    isAway: false,
+    returnTime: null,
+    cargo: {}
+};
+
 // Инициализация Telegram Web App
 let tg = window.Telegram.WebApp;
 if (tg && tg.initData) {
@@ -283,6 +310,58 @@ const XP_REWARDS = {
     faster_worker: 30
 };
 
+// Размеры зданий (сколько квадратов занимает)
+const BUILDING_SIZES = {
+    // FARM - 1x1 квадрат
+    cotton_field: { width: 1, height: 1 },
+    sugarcane_field: { width: 1, height: 1 },
+    wheat_field: { width: 1, height: 1 },
+    tree_farm: { width: 2, height: 2 }, // 4 квадрата
+    well: { width: 1, height: 1 },
+    farm_house: { width: 2, height: 2 }, // 4 квадрата
+    salt_field: { width: 1, height: 1 },
+    lumberjack_house: { width: 2, height: 2 }, // 4 квадрата
+    wood_shed: { width: 2, height: 2 }, // 4 квадрата
+    silo: { width: 1, height: 1 },
+    storehouse: { width: 3, height: 2 }, // 6 квадратов
+    wind_pump: { width: 1, height: 1 },
+    wind_mill: { width: 2, height: 2 }, // 4 квадрата
+    bakery: { width: 3, height: 2 }, // 6 квадратов
+    cakery: { width: 3, height: 2 }, // 6 квадратов
+    
+    // RANCH
+    ranch_house: { width: 2, height: 2 }, // 4 квадрата
+    feed_mill: { width: 2, height: 2 }, // 4 квадрата
+    trough: { width: 1, height: 1 },
+    chicken_coop: { width: 2, height: 2 }, // 4 квадрата
+    sheep_pen: { width: 3, height: 2 }, // 6 квадратов
+    milk_barn: { width: 3, height: 2 }, // 6 квадратов
+    
+    // TERRAIN
+    dirt_road: { width: 1, height: 1 },
+    pasture: { width: 2, height: 2 }, // 4 квадрата
+    paved_road: { width: 1, height: 1 },
+    pond: { width: 2, height: 2 }, // 4 квадрата
+    
+    // INDUSTRIAL
+    oil_pump: { width: 1, height: 1 },
+    water_pump: { width: 1, height: 1 },
+    water_tower: { width: 1, height: 1 },
+    warehouse: { width: 3, height: 2 }, // 6 квадратов
+    wind_turbine: { width: 1, height: 1 },
+    worker_house: { width: 2, height: 2 }, // 4 квадрата
+    refinery: { width: 3, height: 3 }, // 9 квадратов
+    iron_mine: { width: 2, height: 2 }, // 4 квадрата
+    lumber_mill: { width: 3, height: 2 }, // 6 квадратов
+    power_plant: { width: 4, height: 3 }, // 12 квадратов
+    fabric_plant: { width: 4, height: 3 }, // 12 квадратов
+    
+    // TRADE
+    trade_depot: { width: 2, height: 2 }, // 4 квадрата
+    trade_pier: { width: 3, height: 2 }, // 6 квадратов
+    neighbor_delivery: { width: 2, height: 2 } // 4 квадрата
+};
+
 function createPlayer() {
     const nameInput = document.getElementById("name");
     const name = nameInput.value;
@@ -404,12 +483,14 @@ function updateUI(data) {
 }
 
 function updateResources(data) {
-    // Обновляем количество ресурсов
+    // Обновляем деньги
     document.getElementById("goldCount").innerText = data.money || 1000;
-    document.getElementById("bagsCount").innerText = Math.floor(data.money / 100) || 9;
-    document.getElementById("bricksCount").innerText = Math.floor(data.money / 50) || 22;
-    document.getElementById("barrelsCount").innerText = Math.floor(data.money / 80) || 12;
-    document.getElementById("plantsCount").innerText = Math.floor(data.money / 200) || 4;
+    
+    // Обновляем новые ресурсы
+    document.getElementById("bagsCount").innerText = resources.wheat || 0;
+    document.getElementById("bricksCount").innerText = resources.cotton || 0;
+    document.getElementById("barrelsCount").innerText = resources.wood || 0;
+    document.getElementById("plantsCount").innerText = resources.milk || 0;
 }
 
 function updateGameObjects(buildings) {
@@ -440,15 +521,60 @@ function startAutoHarvest() {
 }
 
 function autoHarvest() {
-    fetch(`/produce/?player_id=${playerId}`, { method: "POST" })
-        .then(res => res.json())
-        .then(data => {
-            showNotification(`🌾 Автосбор урожая! +${data.income}$`);
-            loadPlayerData();
-        })
-        .catch(error => {
-            console.error("Error:", error);
-        });
+    if (!playerData) return;
+    
+    // Автоматическое производство ресурсов на полях
+    // Пшеничные поля производят пшеницу
+    const wheatFields = gameObjects.filter(obj => obj.buildingType === 'wheat_field').length;
+    if (wheatFields > 0) {
+        resources.wheat += wheatFields * 10; // 10 пшеницы за минуту на поле
+    }
+    
+    // Хлопковые поля производят хлопок
+    const cottonFields = gameObjects.filter(obj => obj.buildingType === 'cotton_field').length;
+    if (cottonFields > 0) {
+        resources.cotton += cottonFields * 8; // 8 хлопка за минуту на поле
+    }
+    
+    // Сахарные поля производят сахар
+    const sugarcaneFields = gameObjects.filter(obj => obj.buildingType === 'sugarcane_field').length;
+    if (sugarcaneFields > 0) {
+        resources.sugarcane += sugarcaneFields * 6; // 6 сахара за минуту на поле
+    }
+    
+    // Лесные фермы производят дерево
+    const treeFarms = gameObjects.filter(obj => obj.buildingType === 'tree_farm').length;
+    if (treeFarms > 0) {
+        resources.wood += treeFarms * 5; // 5 дерева за минуту на ферме
+    }
+    
+    // Молочные фермы производят молоко
+    const milkBarns = gameObjects.filter(obj => obj.buildingType === 'milk_barn').length;
+    if (milkBarns > 0) {
+        resources.milk += milkBarns * 3; // 3 молока за минуту на ферме
+    }
+    
+    // Курятники производят яйца
+    const chickenCoops = gameObjects.filter(obj => obj.buildingType === 'chicken_coop').length;
+    if (chickenCoops > 0) {
+        resources.eggs += chickenCoops * 4; // 4 яйца за минуту в курятнике
+    }
+    
+    // Овчарни производят шерсть
+    const sheepPens = gameObjects.filter(obj => obj.buildingType === 'sheep_pen').length;
+    if (sheepPens > 0) {
+        resources.wool += sheepPens * 2; // 2 шерсти за минуту в овчарне
+    }
+    
+    // Показываем уведомление о производстве
+    let totalProduced = 0;
+    for (let resource in resources) {
+        totalProduced += resources[resource];
+    }
+    
+    if (totalProduced > 0) {
+        showNotification(`🌾 Произведено товаров: ${totalProduced} единиц`);
+    }
 }
 
 // Магазин
@@ -530,7 +656,7 @@ function buyItem(type, name, cost, customX = null, customY = null) {
             showNotification(`✅ ${name} куплен! +${xp} опыта`);
             
             // Размещаем здание на поле если это здание
-            if (['house', 'windmill', 'farm', 'warehouse', 'factory', 'silo'].includes(type)) {
+            if (allBuildings.includes(type)) {
                 let x, y;
                 if (customX !== null && customY !== null) {
                     // Используем кастомные координаты для ручного размещения
@@ -558,25 +684,32 @@ function buyItem(type, name, cost, customX = null, customY = null) {
 
 function showResourceInfo(resourceType, resourceName) {
     let description = '';
+    let count = 0;
+    
     switch(resourceType) {
         case 'gold':
-            description = 'Основная валюта игры. Зарабатывается автоматически.';
+            description = 'Основная валюта игры. Зарабатывается продажей товаров.';
+            count = playerData ? playerData.money : 0;
             break;
-        case 'bags':
-            description = 'Мешки с зерном. Используются для кормления животных.';
+        case 'wheat':
+            description = 'Пшеница с полей. Производится пшеничными полями.';
+            count = resources.wheat || 0;
             break;
-        case 'bricks':
-            description = 'Строительные материалы. Нужны для постройки зданий.';
+        case 'cotton':
+            description = 'Хлопок с полей. Производится хлопковыми полями.';
+            count = resources.cotton || 0;
             break;
-        case 'barrels':
-            description = 'Бочки с топливом. Используются для техники.';
+        case 'wood':
+            description = 'Дерево с лесных ферм. Производится лесными фермами.';
+            count = resources.wood || 0;
             break;
-        case 'plants':
-            description = 'Растения и семена. Основа для выращивания культур.';
+        case 'milk':
+            description = 'Молоко с молочных ферм. Производится молочными фермами.';
+            count = resources.milk || 0;
             break;
     }
     
-    showNotification(`${resourceName}: ${description}`);
+    showNotification(`${resourceName}: ${description} (${count} единиц)`);
 }
 
 function rotateView() {
@@ -601,59 +734,61 @@ function startPlacement() {
     // Показываем меню выбора здания
     const buildingTypes = [
         // FARM
-        { type: 'cotton_field', name: 'Хлопковое поле', cost: 250, icon: '🌱' },
-        { type: 'sugarcane_field', name: 'Сахарное поле', cost: 250, icon: '🎋' },
-        { type: 'wheat_field', name: 'Пшеничное поле', cost: 250, icon: '🌾' },
-        { type: 'tree_farm', name: 'Лесная ферма', cost: 500, icon: '🌳' },
-        { type: 'well', name: 'Колодец', cost: 1250, icon: '💧' },
-        { type: 'farm_house', name: 'Фермерский дом', cost: 1250, icon: '🏠' },
-        { type: 'salt_field', name: 'Соляное поле', cost: 1250, icon: '🧂' },
-        { type: 'lumberjack_house', name: 'Дом лесоруба', cost: 2500, icon: '🪓' },
-        { type: 'wood_shed', name: 'Дровяной сарай', cost: 5000, icon: '🪵' },
-        { type: 'silo', name: 'Силос', cost: 10000, icon: '🗼' },
-        { type: 'storehouse', name: 'Склад', cost: 20000, icon: '🏪' },
-        { type: 'wind_pump', name: 'Ветряной насос', cost: 25000, icon: '💨' },
-        { type: 'wind_mill', name: 'Ветряная мельница', cost: 15000, icon: '🌪️' },
-        { type: 'bakery', name: 'Пекарня', cost: 200000, icon: '🥖' },
-        { type: 'cakery', name: 'Кондитерская', cost: 250000, icon: '🎂' },
+        { type: 'cotton_field', name: 'Хлопковое поле', cost: 250, icon: '🌱', size: '1x1' },
+        { type: 'sugarcane_field', name: 'Сахарное поле', cost: 250, icon: '🎋', size: '1x1' },
+        { type: 'wheat_field', name: 'Пшеничное поле', cost: 250, icon: '🌾', size: '1x1' },
+        { type: 'tree_farm', name: 'Лесная ферма', cost: 500, icon: '🌳', size: '2x2' },
+        { type: 'well', name: 'Колодец', cost: 1250, icon: '💧', size: '1x1' },
+        { type: 'farm_house', name: 'Фермерский дом', cost: 1250, icon: '🏠', size: '2x2' },
+        { type: 'salt_field', name: 'Соляное поле', cost: 1250, icon: '🧂', size: '1x1' },
+        { type: 'lumberjack_house', name: 'Дом лесоруба', cost: 2500, icon: '🪓', size: '2x2' },
+        { type: 'wood_shed', name: 'Дровяной сарай', cost: 5000, icon: '🪵', size: '2x2' },
+        { type: 'silo', name: 'Силос', cost: 10000, icon: '🗼', size: '1x1' },
+        { type: 'storehouse', name: 'Склад', cost: 20000, icon: '🏪', size: '3x2' },
+        { type: 'wind_pump', name: 'Ветряной насос', cost: 25000, icon: '💨', size: '1x1' },
+        { type: 'wind_mill', name: 'Ветряная мельница', cost: 15000, icon: '🌪️', size: '2x2' },
+        { type: 'bakery', name: 'Пекарня', cost: 200000, icon: '🥖', size: '3x2' },
+        { type: 'cakery', name: 'Кондитерская', cost: 250000, icon: '🎂', size: '3x2' },
         
         // RANCH
-        { type: 'ranch_house', name: 'Ранчо', cost: 1250, icon: '🐄' },
-        { type: 'feed_mill', name: 'Кормовой завод', cost: 5000, icon: '🌾' },
-        { type: 'trough', name: 'Кормушка', cost: 5000, icon: '🥣' },
-        { type: 'chicken_coop', name: 'Курятник', cost: 30000, icon: '🐔' },
-        { type: 'sheep_pen', name: 'Овчарня', cost: 40000, icon: '🐑' },
-        { type: 'milk_barn', name: 'Молочная ферма', cost: 50000, icon: '🥛' },
+        { type: 'ranch_house', name: 'Ранчо', cost: 1250, icon: '🐄', size: '2x2' },
+        { type: 'feed_mill', name: 'Кормовой завод', cost: 5000, icon: '🌾', size: '2x2' },
+        { type: 'trough', name: 'Кормушка', cost: 5000, icon: '🥣', size: '1x1' },
+        { type: 'chicken_coop', name: 'Курятник', cost: 30000, icon: '🐔', size: '2x2' },
+        { type: 'sheep_pen', name: 'Овчарня', cost: 40000, icon: '🐑', size: '3x2' },
+        { type: 'milk_barn', name: 'Молочная ферма', cost: 50000, icon: '🥛', size: '3x2' },
         
         // TERRAIN
-        { type: 'dirt_road', name: 'Грунтовая дорога', cost: 1000, icon: '🛣️' },
-        { type: 'pasture', name: 'Пастбище', cost: 5000, icon: '🌿' },
-        { type: 'paved_road', name: 'Асфальтовая дорога', cost: 10000, icon: '🛣️' },
-        { type: 'pond', name: 'Пруд', cost: 20000, icon: '🌊' },
+        { type: 'dirt_road', name: 'Грунтовая дорога', cost: 1000, icon: '🛣️', size: '1x1' },
+        { type: 'pasture', name: 'Пастбище', cost: 5000, icon: '🌿', size: '2x2' },
+        { type: 'paved_road', name: 'Асфальтовая дорога', cost: 10000, icon: '🛣️', size: '1x1' },
+        { type: 'pond', name: 'Пруд', cost: 20000, icon: '🌊', size: '2x2' },
         
         // INDUSTRIAL
-        { type: 'oil_pump', name: 'Нефтяная вышка', cost: 1250, icon: '⛽' },
-        { type: 'water_pump', name: 'Водяной насос', cost: 5000, icon: '💧' },
-        { type: 'water_tower', name: 'Водонапорная башня', cost: 5000, icon: '🗼' },
-        { type: 'warehouse', name: 'Склад', cost: 10000, icon: '🏭' },
-        { type: 'wind_turbine', name: 'Ветряная турбина', cost: 2500, icon: '💨' },
-        { type: 'worker_house', name: 'Дом рабочего', cost: 2500, icon: '🏠' },
-        { type: 'refinery', name: 'Нефтеперерабатывающий завод', cost: 15000, icon: '🏭' },
-        { type: 'iron_mine', name: 'Железный рудник', cost: 25000, icon: '⛏️' },
-        { type: 'lumber_mill', name: 'Лесопилка', cost: 50000, icon: '🪵' },
-        { type: 'power_plant', name: 'Электростанция', cost: 100000, icon: '⚡' },
-        { type: 'fabric_plant', name: 'Текстильная фабрика', cost: 250000, icon: '🧵' },
+        { type: 'oil_pump', name: 'Нефтяная вышка', cost: 1250, icon: '⛽', size: '1x1' },
+        { type: 'water_pump', name: 'Водяной насос', cost: 5000, icon: '💧', size: '1x1' },
+        { type: 'water_tower', name: 'Водонапорная башня', cost: 5000, icon: '🗼', size: '1x1' },
+        { type: 'warehouse', name: 'Склад', cost: 10000, icon: '🏭', size: '3x2' },
+        { type: 'wind_turbine', name: 'Ветряная турбина', cost: 2500, icon: '💨', size: '1x1' },
+        { type: 'worker_house', name: 'Дом рабочего', cost: 2500, icon: '🏠', size: '2x2' },
+        { type: 'refinery', name: 'Нефтеперерабатывающий завод', cost: 15000, icon: '🏭', size: '3x3' },
+        { type: 'iron_mine', name: 'Железный рудник', cost: 25000, icon: '⛏️', size: '2x2' },
+        { type: 'lumber_mill', name: 'Лесопилка', cost: 50000, icon: '🪵', size: '3x2' },
+        { type: 'power_plant', name: 'Электростанция', cost: 100000, icon: '⚡', size: '4x3' },
+        { type: 'fabric_plant', name: 'Текстильная фабрика', cost: 250000, icon: '🧵', size: '4x3' },
         
         // TRADE
-        { type: 'trade_depot', name: 'Торговая база', cost: 5000, icon: '📦' },
-        { type: 'trade_pier', name: 'Торговый причал', cost: 10000, icon: '🚢' },
-        { type: 'neighbor_delivery', name: 'Доставка соседям', cost: 15000, icon: '🚚' }
+        { type: 'trade_depot', name: 'Торговая база', cost: 5000, icon: '📦', size: '2x2' },
+        { type: 'trade_pier', name: 'Торговый причал', cost: 10000, icon: '🚢', size: '3x2' },
+        { type: 'neighbor_delivery', name: 'Доставка соседям', cost: 15000, icon: '🚚', size: '2x2' }
     ];
     
     let menu = "Выберите здание для размещения:\n\n";
+    let index = 1;
     buildingTypes.forEach(building => {
         if (playerData.money >= building.cost) {
-            menu += `${building.icon} ${building.name} - $${building.cost}\n`;
+            menu += `${index}. ${building.icon} ${building.name} (${building.size}) - $${building.cost}\n`;
+            index++;
         }
     });
     
@@ -666,8 +801,11 @@ function startPlacement() {
         if (playerData.money >= building.cost) {
             selectedBuildingType = building.type;
             placementMode = true;
-            showNotification(`Режим размещения: ${building.name}. Кликните на поле для размещения.`);
+            showNotification(`Режим размещения: ${building.name} (${building.size}). Кликните на поле для размещения.`);
             document.getElementById("gameWorld").classList.add("placement-mode");
+            
+            // Добавляем обработчик движения мыши для предварительного просмотра
+            document.getElementById("gameWorld").addEventListener('mousemove', showPlacementPreview);
         } else {
             showNotification("Недостаточно денег!");
         }
@@ -744,10 +882,57 @@ function getBuildingName(type) {
     return names[type] || type;
 }
 
+function showPlacementPreview(e) {
+    if (!placementMode || !selectedBuildingType) return;
+    
+    const gameWorld = document.getElementById("gameWorld");
+    const rect = gameWorld.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    // Получаем размеры здания
+    const buildingSize = BUILDING_SIZES[selectedBuildingType] || { width: 1, height: 1 };
+    const gridSize = 40; // Размер одного квадрата сетки
+    
+    // Удаляем старый предварительный просмотр
+    if (placementPreview) {
+        placementPreview.remove();
+    }
+    
+    // Создаем новый предварительный просмотр
+    placementPreview = document.createElement('div');
+    placementPreview.className = 'placement-preview';
+    placementPreview.style.left = x + 'px';
+    placementPreview.style.top = y + 'px';
+    placementPreview.style.width = (buildingSize.width * gridSize) + 'px';
+    placementPreview.style.height = (buildingSize.height * gridSize) + 'px';
+    placementPreview.style.border = '3px dashed #fff';
+    placementPreview.style.background = 'rgba(255,255,255,0.2)';
+    placementPreview.style.position = 'absolute';
+    placementPreview.style.pointerEvents = 'none';
+    placementPreview.style.zIndex = '5';
+    
+    // Добавляем текст с размером
+    placementPreview.innerHTML = `
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                    color: white; font-size: 12px; font-weight: bold; text-align: center;">
+            ${BUILDING_ICONS[selectedBuildingType]}<br>
+            ${buildingSize.width}x${buildingSize.height}
+        </div>
+    `;
+    
+    gameWorld.appendChild(placementPreview);
+}
+
 function exitPlacementMode() {
     placementMode = false;
     selectedBuildingType = null;
     document.getElementById("gameWorld").classList.remove("placement-mode");
+    
+    // Удаляем обработчик движения мыши
+    document.getElementById("gameWorld").removeEventListener('mousemove', showPlacementPreview);
+    
+    // Удаляем предварительный просмотр
     if (placementPreview) {
         placementPreview.remove();
         placementPreview = null;
@@ -780,6 +965,76 @@ function showNotification(message) {
             notification.remove();
         }, 300);
     }, 3000);
+}
+
+// Новая система транспортировки ресурсов
+function sellGoods() {
+    if (vehicle.isAway) {
+        showNotification("Машина уже в пути!");
+        return;
+    }
+    
+    // Проверяем, есть ли товары на складе
+    let totalGoods = 0;
+    for (let resource in warehouse) {
+        totalGoods += warehouse[resource];
+    }
+    
+    if (totalGoods === 0) {
+        showNotification("Нет товаров для продажи!");
+        return;
+    }
+    
+    // Отправляем машину
+    vehicle.isAway = true;
+    vehicle.returnTime = Date.now() + 60000; // 1 минута
+    vehicle.cargo = { ...warehouse };
+    
+    // Очищаем склад
+    for (let resource in warehouse) {
+        warehouse[resource] = 0;
+    }
+    
+    showNotification("🚛 Машина отправлена с товарами! Вернется через 1 минуту.");
+    
+    // Запускаем таймер возвращения
+    setTimeout(() => {
+        vehicle.isAway = false;
+        vehicle.returnTime = null;
+        
+        // Рассчитываем прибыль
+        let profit = 0;
+        for (let resource in vehicle.cargo) {
+            profit += vehicle.cargo[resource] * 10; // $10 за единицу товара
+        }
+        
+        if (playerData) {
+            playerData.money += profit;
+            showNotification(`💰 Машина вернулась! Прибыль: $${profit}`);
+            loadPlayerData();
+        }
+        
+        vehicle.cargo = {};
+    }, 60000);
+}
+
+function transportToWarehouse() {
+    // Фермеры транспортируют товары с полей на склад
+    let transported = false;
+    
+    for (let resource in resources) {
+        if (resources[resource] > 0) {
+            warehouse[resource] += resources[resource];
+            resources[resource] = 0;
+            transported = true;
+        }
+    }
+    
+    if (transported) {
+        showNotification("👨‍🌾 Фермеры доставили товары на склад!");
+    } else {
+        showNotification("Нет товаров для транспортировки!");
+    }
 }
 
 // Закрытие магазина при клике вне его

@@ -147,9 +147,12 @@
             padding: 25px;
             margin: 20px;
             max-width: 400px;
+            max-height: 80vh;
             margin: 50px auto;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             color: white;
+            overflow-y: auto;
+            overflow-x: hidden;
         }
 
         .shop-title {
@@ -185,6 +188,8 @@
             grid-template-columns: 1fr 1fr;
             gap: 10px;
             margin-bottom: 20px;
+            max-height: 60vh;
+            overflow-y: auto;
         }
 
         .shop-item {
@@ -208,6 +213,43 @@
         .shop-close {
             background: #e74c3c;
             width: 100%;
+        }
+
+        /* Кастомный скроллбар для магазина */
+        .shop-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .shop-content::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+        }
+
+        .shop-content::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+        }
+
+        .shop-content::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.5);
+        }
+
+        .shop-items::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .shop-items::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+        }
+
+        .shop-items::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 3px;
+        }
+
+        .shop-items::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.5);
         }
 
         /* Логин секция */
@@ -465,31 +507,33 @@
                     🥇
                     <div class="resource-count" id="goldCount">730</div>
                 </div>
-                <div class="resource-icon" style="background: #8b4513;" onclick="showResourceInfo('bags', 'Мешки')">
-                    🛍️
-                    <div class="resource-count" id="bagsCount">9</div>
+                <div class="resource-icon" style="background: #8b4513;" onclick="showResourceInfo('wheat', 'Пшеница')">
+                    🌾
+                    <div class="resource-count" id="bagsCount">0</div>
                 </div>
-                <div class="resource-icon" style="background: #e74c3c;" onclick="showResourceInfo('bricks', 'Кирпичи')">
-                    🧱
-                    <div class="resource-count" id="bricksCount">22</div>
+                <div class="resource-icon" style="background: #e74c3c;" onclick="showResourceInfo('cotton', 'Хлопок')">
+                    🌱
+                    <div class="resource-count" id="bricksCount">0</div>
                 </div>
-                <div class="resource-icon" style="background: #3498db;" onclick="showResourceInfo('barrels', 'Бочки')">
-                    🛢️
-                    <div class="resource-count" id="barrelsCount">12</div>
+                <div class="resource-icon" style="background: #3498db;" onclick="showResourceInfo('wood', 'Дерево')">
+                    🪵
+                    <div class="resource-count" id="barrelsCount">0</div>
                 </div>
-                <div class="resource-icon" style="background: #27ae60;" onclick="showResourceInfo('plants', 'Растения')">
-                    🌿
-                    <div class="resource-count" id="plantsCount">4</div>
+                <div class="resource-icon" style="background: #27ae60;" onclick="showResourceInfo('milk', 'Молоко')">
+                    🥛
+                    <div class="resource-count" id="plantsCount">0</div>
                 </div>
             </div>
 
             <!-- Кнопки действий -->
-                                    <div id="actionButtons" class="action-buttons" style="display: none;">
-                            <button class="action-btn" onclick="openShop()" title="Магазин">🏪</button>
-                            <button class="action-btn" onclick="startPlacement()" title="Разместить здание">📍</button>
-                            <button class="action-btn" onclick="rotateView()" title="Повернуть вид">🔄</button>
-                            <button class="action-btn" onclick="removeObject()" title="Удалить объект">💣</button>
-                        </div>
+            <div id="actionButtons" class="action-buttons" style="display: none;">
+                <button class="action-btn" onclick="openShop()" title="Магазин">🏪</button>
+                <button class="action-btn" onclick="startPlacement()" title="Разместить здание">📍</button>
+                <button class="action-btn" onclick="transportToWarehouse()" title="Транспортировать на склад">🚚</button>
+                <button class="action-btn" onclick="sellGoods()" title="Продать товары">💰</button>
+                <button class="action-btn" onclick="rotateView()" title="Повернуть вид">🔄</button>
+                <button class="action-btn" onclick="removeObject()" title="Удалить объект">💣</button>
+            </div>
         </div>
     </div>
 
