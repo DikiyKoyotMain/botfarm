@@ -80,8 +80,10 @@ function createPlayer() {
     // Показываем индикатор загрузки
     const button = document.querySelector('.login-button');
     const originalText = button.textContent;
-    button.textContent = "Создание...";
-    button.disabled = true;
+    if (button) {
+        button.textContent = "Создание...";
+        button.disabled = true;
+    }
     
     const formData = new FormData();
     formData.append('name', name.trim());
@@ -114,8 +116,10 @@ function createPlayer() {
         })
         .finally(() => {
             // Восстанавливаем кнопку
-            button.textContent = originalText;
-            button.disabled = false;
+            if (button) {
+                button.textContent = originalText;
+                button.disabled = false;
+            }
         });
 }
 
