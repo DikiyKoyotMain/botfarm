@@ -439,11 +439,25 @@ function addGameObject(type, x, y, icon, buildingType = null) {
     obj.className = `game-object ${type}`;
     obj.style.left = x + 'px';
     obj.style.top = y + 'px';
-    obj.innerHTML = icon;
+    
+    // Используем CSS изображения для построек, эмодзи для остального
+    if (buildingType && BUILDING_ICONS[buildingType]) {
+        obj.innerHTML = `<div class="building-image ${buildingType}"></div>`;
+    } else {
+        obj.innerHTML = icon;
+    }
     
     if (buildingType) {
-        obj.style.background = BUILDING_COLORS[buildingType] || "#667eea";
         obj.dataset.buildingType = buildingType;
+        
+        // Добавляем информацию о размере здания
+        if (BUILDING_SIZES[buildingType]) {
+            const size = BUILDING_SIZES[buildingType];
+            obj.style.width = (size.width * 40) + "px";
+            obj.style.height = (size.height * 40) + "px";
+            obj.setAttribute("data-width", size.width);
+            obj.setAttribute("data-height", size.height);
+        }
     }
     
     if (type === 'building') {
@@ -912,11 +926,11 @@ function showPlacementPreview(e) {
     placementPreview.style.pointerEvents = 'none';
     placementPreview.style.zIndex = '5';
     
-    // Добавляем текст с размером
+    // Добавляем CSS изображение здания в предпросмотр
     placementPreview.innerHTML = `
+        <div class="building-image ${selectedBuildingType}" style="width: 100%; height: 100%; opacity: 0.7;"></div>
         <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-                    color: white; font-size: 12px; font-weight: bold; text-align: center;">
-            ${BUILDING_ICONS[selectedBuildingType]}<br>
+                    color: white; font-size: 12px; font-weight: bold; text-align: center; z-index: 10;">
             ${buildingSize.width}x${buildingSize.height}
         </div>
     `;

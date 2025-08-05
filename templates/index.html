@@ -432,6 +432,878 @@
             color: white;
         }
 
+        /* Стили для изометрических изображений построек */
+        .building-image {
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Фермерские постройки */
+        .building-image.wheat_field {
+            background: linear-gradient(45deg, #8B4513 0%, #A0522D 50%, #CD853F 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.wheat_field::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 20%;
+            right: 20%;
+            bottom: 20%;
+            background: linear-gradient(45deg, #90EE90 0%, #32CD32 50%, #228B22 100%);
+            border-radius: 4px;
+            transform: rotate(45deg);
+        }
+        
+        .building-image.cotton_field {
+            background: linear-gradient(45deg, #8B4513 0%, #A0522D 50%, #CD853F 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.cotton_field::before {
+            content: '';
+            position: absolute;
+            top: 15%;
+            left: 15%;
+            right: 15%;
+            bottom: 15%;
+            background: linear-gradient(45deg, #F0F8FF 0%, #E6E6FA 50%, #DDA0DD 100%);
+            border-radius: 4px;
+            transform: rotate(45deg);
+        }
+        
+        .building-image.sugarcane_field {
+            background: linear-gradient(45deg, #8B4513 0%, #A0522D 50%, #CD853F 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.sugarcane_field::before {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            right: 10%;
+            bottom: 10%;
+            background: linear-gradient(45deg, #FFD700 0%, #FFA500 50%, #FF8C00 100%);
+            border-radius: 4px;
+            transform: rotate(45deg);
+        }
+        
+        .building-image.tree_farm {
+            background: linear-gradient(45deg, #228B22 0%, #32CD32 50%, #90EE90 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.tree_farm::before {
+            content: '';
+            position: absolute;
+            top: 25%;
+            left: 25%;
+            right: 25%;
+            bottom: 25%;
+            background: radial-gradient(circle, #006400 0%, #228B22 50%, #32CD32 100%);
+            border-radius: 50%;
+        }
+        
+        .building-image.well {
+            background: linear-gradient(45deg, #696969 0%, #808080 50%, #A9A9A9 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.well::before {
+            content: '';
+            position: absolute;
+            top: 30%;
+            left: 30%;
+            right: 30%;
+            bottom: 30%;
+            background: radial-gradient(circle, #4169E1 0%, #1E90FF 50%, #87CEEB 100%);
+            border-radius: 50%;
+        }
+        
+        .building-image.farm_house {
+            background: linear-gradient(45deg, #8B4513 0%, #A0522D 50%, #CD853F 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.farm_house::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 60%;
+            background: linear-gradient(45deg, #8B0000 0%, #DC143C 50%, #FF6347 100%);
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+        
+        /* Промышленные постройки */
+        .building-image.warehouse {
+            background: linear-gradient(45deg, #696969 0%, #808080 50%, #A9A9A9 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.warehouse::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, #2F4F4F 0%, #708090 50%, #B0C4DE 100%);
+            clip-path: polygon(0% 0%, 100% 0%, 90% 100%, 10% 100%);
+        }
+        
+        .building-image.power_plant {
+            background: linear-gradient(45deg, #2F4F4F 0%, #708090 50%, #B0C4DE 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.power_plant::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 20%;
+            right: 20%;
+            bottom: 20%;
+            background: linear-gradient(45deg, #FF4500 0%, #FF6347 50%, #FF7F50 100%);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .building-image.fabric_plant {
+            background: linear-gradient(45deg, #696969 0%, #808080 50%, #A9A9A9 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.fabric_plant::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, #FF69B4 0%, #FFB6C1 50%, #F0F8FF 100%);
+            clip-path: polygon(0% 0%, 100% 0%, 85% 100%, 15% 100%);
+        }
+        
+        .building-image.steel_mill {
+            background: linear-gradient(45deg, #2F4F4F 0%, #708090 50%, #B0C4DE 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.steel_mill::before {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            right: 10%;
+            bottom: 10%;
+            background: linear-gradient(45deg, #FF4500 0%, #FF6347 50%, #FF7F50 100%);
+            border-radius: 8px;
+            animation: glow 1.5s infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { box-shadow: 0 0 10px #FF4500; }
+            to { box-shadow: 0 0 20px #FF6347, 0 0 30px #FF7F50; }
+        }
+        
+        /* Ранчо */
+        .building-image.chicken_coop {
+            background: linear-gradient(45deg, #8B4513 0%, #A0522D 50%, #CD853F 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.chicken_coop::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 20%;
+            right: 20%;
+            bottom: 20%;
+            background: linear-gradient(45deg, #FFD700 0%, #FFA500 50%, #FF8C00 100%);
+            border-radius: 50%;
+        }
+        
+        .building-image.sheep_pen {
+            background: linear-gradient(45deg, #8B4513 0%, #A0522D 50%, #CD853F 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.sheep_pen::before {
+            content: '';
+            position: absolute;
+            top: 15%;
+            left: 15%;
+            right: 15%;
+            bottom: 15%;
+            background: linear-gradient(45deg, #F5F5DC 0%, #DEB887 50%, #D2B48C 100%);
+            border-radius: 50%;
+        }
+        
+        .building-image.milk_barn {
+            background: linear-gradient(45deg, #8B4513 0%, #A0522D 50%, #CD853F 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.milk_barn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, #F0F8FF 0%, #E6E6FA 50%, #DDA0DD 100%);
+            clip-path: polygon(0% 0%, 100% 0%, 90% 100%, 10% 100%);
+        }
+        
+        /* Транспорт */
+        .building-image.farm_tractor {
+            background: linear-gradient(45deg, #FF4500 0%, #FF6347 50%, #FF7F50 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.farm_tractor::before {
+            content: '';
+            position: absolute;
+            top: 30%;
+            left: 20%;
+            right: 20%;
+            bottom: 30%;
+            background: linear-gradient(45deg, #000000 0%, #696969 50%, #A9A9A9 100%);
+            border-radius: 50%;
+        }
+        
+        .building-image.atv {
+            background: linear-gradient(45deg, #4169E1 0%, #1E90FF 50%, #87CEEB 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.atv::before {
+            content: '';
+            position: absolute;
+            top: 40%;
+            left: 25%;
+            right: 25%;
+            bottom: 40%;
+            background: linear-gradient(45deg, #000000 0%, #696969 50%, #A9A9A9 100%);
+            border-radius: 50%;
+        }
+        
+        .building-image.forklift {
+            background: linear-gradient(45deg, #FFD700 0%, #FFA500 50%, #FF8C00 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.forklift::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 30%;
+            right: 30%;
+            bottom: 20%;
+            background: linear-gradient(45deg, #000000 0%, #696969 50%, #A9A9A9 100%);
+            border-radius: 8px;
+        }
+        
+        /* Дороги и инфраструктура */
+        .building-image.dirt_road {
+            background: linear-gradient(45deg, #8B4513 0%, #A0522D 50%, #CD853F 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.dirt_road::before {
+            content: '';
+            position: absolute;
+            top: 40%;
+            left: 0;
+            right: 0;
+            bottom: 40%;
+            background: linear-gradient(45deg, #D2B48C 0%, #DEB887 50%, #F5F5DC 100%);
+        }
+        
+        .building-image.paved_road {
+            background: linear-gradient(45deg, #696969 0%, #808080 50%, #A9A9A9 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.paved_road::before {
+            content: '';
+            position: absolute;
+            top: 40%;
+            left: 0;
+            right: 0;
+            bottom: 40%;
+            background: linear-gradient(45deg, #C0C0C0 0%, #D3D3D3 50%, #E6E6E6 100%);
+        }
+        
+        .building-image.pond {
+            background: linear-gradient(45deg, #4169E1 0%, #1E90FF 50%, #87CEEB 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.pond::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 20%;
+            right: 20%;
+            bottom: 20%;
+            background: radial-gradient(circle, #000080 0%, #4169E1 50%, #87CEEB 100%);
+            border-radius: 50%;
+            animation: ripple 3s infinite;
+        }
+        
+        @keyframes ripple {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 0.6; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+        
+        /* Общие стили для всех построек */
+        .game-object .building-image {
+            border: 2px solid rgba(255,255,255,0.3);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        
+        .placement-preview .building-image {
+            opacity: 0.7;
+            border: 2px dashed rgba(255,255,255,0.8);
+        }
+        
+        /* Дополнительные постройки */
+        .building-image.salt_field {
+            background: linear-gradient(45deg, #F5F5DC 0%, #DEB887 50%, #D2B48C 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.salt_field::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 20%;
+            right: 20%;
+            bottom: 20%;
+            background: linear-gradient(45deg, #FFFFFF 0%, #F0F8FF 50%, #E6E6FA 100%);
+            border-radius: 50%;
+        }
+        
+        .building-image.lumberjack_house {
+            background: linear-gradient(45deg, #8B4513 0%, #A0522D 50%, #CD853F 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.lumberjack_house::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, #228B22 0%, #32CD32 50%, #90EE90 100%);
+            clip-path: polygon(0% 0%, 100% 0%, 85% 100%, 15% 100%);
+        }
+        
+        .building-image.wood_shed {
+            background: linear-gradient(45deg, #8B4513 0%, #A0522D 50%, #CD853F 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.wood_shed::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, #D2B48C 0%, #DEB887 50%, #F5F5DC 100%);
+            clip-path: polygon(0% 0%, 100% 0%, 90% 100%, 10% 100%);
+        }
+        
+        .building-image.silo {
+            background: linear-gradient(45deg, #696969 0%, #808080 50%, #A9A9A9 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.silo::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 20%;
+            right: 20%;
+            bottom: 0;
+            background: linear-gradient(45deg, #FFD700 0%, #FFA500 50%, #FF8C00 100%);
+            border-radius: 50% 50% 0 0;
+        }
+        
+        .building-image.storehouse {
+            background: linear-gradient(45deg, #696969 0%, #808080 50%, #A9A9A9 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.storehouse::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, #2F4F4F 0%, #708090 50%, #B0C4DE 100%);
+            clip-path: polygon(0% 0%, 100% 0%, 95% 100%, 5% 100%);
+        }
+        
+        .building-image.wind_pump {
+            background: linear-gradient(45deg, #696969 0%, #808080 50%, #A9A9A9 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.wind_pump::before {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            right: 10%;
+            bottom: 10%;
+            background: linear-gradient(45deg, #87CEEB 0%, #B0C4DE 50%, #E6E6FA 100%);
+            border-radius: 50%;
+            animation: spin 4s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .building-image.wind_mill {
+            background: linear-gradient(45deg, #8B4513 0%, #A0522D 50%, #CD853F 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.wind_mill::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 60%;
+            background: linear-gradient(45deg, #F5F5DC 0%, #DEB887 50%, #D2B48C 100%);
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+        .building-image.wind_mill::after {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 20%;
+            right: 20%;
+            bottom: 20%;
+            background: linear-gradient(45deg, #87CEEB 0%, #B0C4DE 50%, #E6E6FA 100%);
+            border-radius: 50%;
+            animation: spin 3s linear infinite;
+        }
+        
+        .building-image.bakery {
+            background: linear-gradient(45deg, #8B4513 0%, #A0522D 50%, #CD853F 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.bakery::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, #FFD700 0%, #FFA500 50%, #FF8C00 100%);
+            clip-path: polygon(0% 0%, 100% 0%, 90% 100%, 10% 100%);
+        }
+        .building-image.bakery::after {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            right: 10%;
+            bottom: 10%;
+            background: radial-gradient(circle, #FF4500 0%, #FF6347 50%, #FF7F50 100%);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        .building-image.cakery {
+            background: linear-gradient(45deg, #8B4513 0%, #A0522D 50%, #CD853F 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.cakery::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, #FF69B4 0%, #FFB6C1 50%, #F0F8FF 100%);
+            clip-path: polygon(0% 0%, 100% 0%, 85% 100%, 15% 100%);
+        }
+        .building-image.cakery::after {
+            content: '';
+            position: absolute;
+            top: 15%;
+            left: 15%;
+            right: 15%;
+            bottom: 15%;
+            background: radial-gradient(circle, #FFD700 0%, #FFA500 50%, #FF8C00 100%);
+            border-radius: 50%;
+        }
+        
+        .building-image.logger_house {
+            background: linear-gradient(45deg, #8B4513 0%, #A0522D 50%, #CD853F 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.logger_house::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, #228B22 0%, #32CD32 50%, #90EE90 100%);
+            clip-path: polygon(0% 0%, 100% 0%, 80% 100%, 20% 100%);
+        }
+        
+        /* Ранчо */
+        .building-image.ranch_house {
+            background: linear-gradient(45deg, #8B4513 0%, #A0522D 50%, #CD853F 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.ranch_house::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 60%;
+            background: linear-gradient(45deg, #8B0000 0%, #DC143C 50%, #FF6347 100%);
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+        
+        .building-image.feed_mill {
+            background: linear-gradient(45deg, #696969 0%, #808080 50%, #A9A9A9 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.feed_mill::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 20%;
+            right: 20%;
+            bottom: 20%;
+            background: linear-gradient(45deg, #FFD700 0%, #FFA500 50%, #FF8C00 100%);
+            border-radius: 50%;
+            animation: spin 3s linear infinite;
+        }
+        
+        .building-image.trough {
+            background: linear-gradient(45deg, #8B4513 0%, #A0522D 50%, #CD853F 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.trough::before {
+            content: '';
+            position: absolute;
+            top: 30%;
+            left: 10%;
+            right: 10%;
+            bottom: 30%;
+            background: linear-gradient(45deg, #F5F5DC 0%, #DEB887 50%, #D2B48C 100%);
+            border-radius: 8px;
+        }
+        
+        /* Промышленные постройки */
+        .building-image.oil_pump {
+            background: linear-gradient(45deg, #2F4F4F 0%, #708090 50%, #B0C4DE 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.oil_pump::before {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            right: 10%;
+            bottom: 10%;
+            background: linear-gradient(45deg, #000000 0%, #696969 50%, #A9A9A9 100%);
+            border-radius: 50%;
+            animation: pump 2s infinite;
+        }
+        
+        @keyframes pump {
+            0% { transform: scaleY(1); }
+            50% { transform: scaleY(1.2); }
+            100% { transform: scaleY(1); }
+        }
+        
+        .building-image.water_pump {
+            background: linear-gradient(45deg, #696969 0%, #808080 50%, #A9A9A9 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.water_pump::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 20%;
+            right: 20%;
+            bottom: 20%;
+            background: linear-gradient(45deg, #4169E1 0%, #1E90FF 50%, #87CEEB 100%);
+            border-radius: 50%;
+            animation: pump 1.5s infinite;
+        }
+        
+        .building-image.water_tower {
+            background: linear-gradient(45deg, #696969 0%, #808080 50%, #A9A9A9 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.water_tower::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 20%;
+            right: 20%;
+            bottom: 40%;
+            background: linear-gradient(45deg, #4169E1 0%, #1E90FF 50%, #87CEEB 100%);
+            border-radius: 50% 50% 0 0;
+        }
+        
+        .building-image.water_facility {
+            background: linear-gradient(45deg, #696969 0%, #808080 50%, #A9A9A9 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.water_facility::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, #4169E1 0%, #1E90FF 50%, #87CEEB 100%);
+            clip-path: polygon(0% 0%, 100% 0%, 90% 100%, 10% 100%);
+        }
+        
+        .building-image.wind_turbine {
+            background: linear-gradient(45deg, #696969 0%, #808080 50%, #A9A9A9 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.wind_turbine::before {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            right: 10%;
+            bottom: 10%;
+            background: linear-gradient(45deg, #87CEEB 0%, #B0C4DE 50%, #E6E6FA 100%);
+            border-radius: 50%;
+            animation: spin 2s linear infinite;
+        }
+        
+        .building-image.worker_house {
+            background: linear-gradient(45deg, #8B4513 0%, #A0522D 50%, #CD853F 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.worker_house::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 60%;
+            background: linear-gradient(45deg, #4169E1 0%, #1E90FF 50%, #87CEEB 100%);
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+        
+        .building-image.fuel_storage {
+            background: linear-gradient(45deg, #2F4F4F 0%, #708090 50%, #B0C4DE 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.fuel_storage::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 20%;
+            right: 20%;
+            bottom: 0;
+            background: linear-gradient(45deg, #000000 0%, #696969 50%, #A9A9A9 100%);
+            border-radius: 50% 50% 0 0;
+        }
+        
+        .building-image.refinery {
+            background: linear-gradient(45deg, #2F4F4F 0%, #708090 50%, #B0C4DE 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.refinery::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, #FF4500 0%, #FF6347 50%, #FF7F50 100%);
+            clip-path: polygon(0% 0%, 100% 0%, 85% 100%, 15% 100%);
+        }
+        .building-image.refinery::after {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 20%;
+            right: 20%;
+            bottom: 20%;
+            background: radial-gradient(circle, #FF4500 0%, #FF6347 50%, #FF7F50 100%);
+            border-radius: 50%;
+            animation: glow 2s infinite alternate;
+        }
+        
+        .building-image.iron_mine {
+            background: linear-gradient(45deg, #2F4F4F 0%, #708090 50%, #B0C4DE 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.iron_mine::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, #696969 0%, #808080 50%, #A9A9A9 100%);
+            clip-path: polygon(0% 0%, 100% 0%, 80% 100%, 20% 100%);
+        }
+        .building-image.iron_mine::after {
+            content: '';
+            position: absolute;
+            top: 30%;
+            left: 30%;
+            right: 30%;
+            bottom: 30%;
+            background: radial-gradient(circle, #C0C0C0 0%, #D3D3D3 50%, #E6E6E6 100%);
+            border-radius: 50%;
+        }
+        
+        .building-image.lumber_mill {
+            background: linear-gradient(45deg, #8B4513 0%, #A0522D 50%, #CD853F 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.lumber_mill::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, #D2B48C 0%, #DEB887 50%, #F5F5DC 100%);
+            clip-path: polygon(0% 0%, 100% 0%, 90% 100%, 10% 100%);
+        }
+        .building-image.lumber_mill::after {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 20%;
+            right: 20%;
+            bottom: 20%;
+            background: linear-gradient(45deg, #228B22 0%, #32CD32 50%, #90EE90 100%);
+            border-radius: 50%;
+            animation: spin 2.5s linear infinite;
+        }
+        
+        .building-image.nuclear_power {
+            background: linear-gradient(45deg, #2F4F4F 0%, #708090 50%, #B0C4DE 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.nuclear_power::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, #32CD32 0%, #90EE90 50%, #98FB98 100%);
+            clip-path: polygon(0% 0%, 100% 0%, 85% 100%, 15% 100%);
+        }
+        .building-image.nuclear_power::after {
+            content: '';
+            position: absolute;
+            top: 15%;
+            left: 15%;
+            right: 15%;
+            bottom: 15%;
+            background: radial-gradient(circle, #32CD32 0%, #90EE90 50%, #98FB98 100%);
+            border-radius: 50%;
+            animation: glow 1s infinite alternate;
+        }
+        
+        /* Торговые постройки */
+        .building-image.trade_depot {
+            background: linear-gradient(45deg, #696969 0%, #808080 50%, #A9A9A9 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.trade_depot::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, #FFD700 0%, #FFA500 50%, #FF8C00 100%);
+            clip-path: polygon(0% 0%, 100% 0%, 90% 100%, 10% 100%);
+        }
+        
+        .building-image.trade_pier {
+            background: linear-gradient(45deg, #8B4513 0%, #A0522D 50%, #CD853F 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.trade_pier::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, #4169E1 0%, #1E90FF 50%, #87CEEB 100%);
+            clip-path: polygon(0% 0%, 100% 0%, 95% 100%, 5% 100%);
+        }
+        
+        .building-image.neighbor_delivery {
+            background: linear-gradient(45deg, #696969 0%, #808080 50%, #A9A9A9 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.neighbor_delivery::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, #32CD32 0%, #90EE90 50%, #98FB98 100%);
+            clip-path: polygon(0% 0%, 100% 0%, 85% 100%, 15% 100%);
+        }
+        
+        .building-image.freight_pier {
+            background: linear-gradient(45deg, #8B4513 0%, #A0522D 50%, #CD853F 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.freight_pier::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, #4169E1 0%, #1E90FF 50%, #87CEEB 100%);
+            clip-path: polygon(0% 0%, 100% 0%, 90% 100%, 10% 100%);
+        }
+        .building-image.freight_pier::after {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 20%;
+            right: 20%;
+            bottom: 20%;
+            background: radial-gradient(circle, #FFD700 0%, #FFA500 50%, #FF8C00 100%);
+            border-radius: 50%;
+        }
+        
+        /* Пастбище */
+        .building-image.pasture {
+            background: linear-gradient(45deg, #228B22 0%, #32CD32 50%, #90EE90 100%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .building-image.pasture::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 20%;
+            right: 20%;
+            bottom: 20%;
+            background: linear-gradient(45deg, #F5F5DC 0%, #DEB887 50%, #D2B48C 100%);
+            border-radius: 50%;
+        }
+
         /* Анимации */
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
